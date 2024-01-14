@@ -1,0 +1,26 @@
+{
+  "name": "carbon-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@rollup/plugin-inject": "^5.0.5",
+    "axios": "^0.24.0",
+    "element-plus": "^2.5.1",
+    "js-cookie": "^3.0.5",
+    "path": "^0.12.7",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "unplugin-auto-import": "^0.17.3",
+    "vite": "^5.0.8"
+  }
+}
