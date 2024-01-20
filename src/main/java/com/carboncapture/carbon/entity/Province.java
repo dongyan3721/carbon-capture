@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
  * @description 对应省份表
  * @date 2024/1/13-19:50:44
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "provinces")
+@Table(name = "t_provinces")
 public class Province extends BaseEntity {
 
     @Id

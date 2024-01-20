@@ -1,10 +1,12 @@
 package com.carboncapture.carbon.entity.base;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +17,8 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity {
+@MappedSuperclass
+public class BaseEntity implements Serializable {
 
     @Column(name = "create_by")
     protected String createBy;

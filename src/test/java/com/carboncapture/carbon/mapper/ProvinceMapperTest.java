@@ -35,8 +35,8 @@ class ProvinceMapperTest {
         System.out.println(all.getContent());
         System.out.println(all.getTotalPages());
         Sort.TypedSort<Province> sortEntityModel = QSort.sort(Province.class);
-        // 按照id升序排序
-        Sort sortModel = sortEntityModel.by(Province::getId).ascending()
+        // 按照创建时间升序排序
+        Sort sortModel = sortEntityModel.by(Province::getCreateTime).ascending()
                 // 按照省份名降序排序
                 .and(sortEntityModel.by(Province::getRegionName).descending());
         Iterable<Province> result = provinceMapper.findAll(sortModel);
