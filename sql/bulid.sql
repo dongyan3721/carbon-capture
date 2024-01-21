@@ -1,3 +1,16 @@
+create table t_provinces
+(
+    id          varchar(36)                        not null
+        primary key,
+    region_name varchar(50)                        null,
+    capital     varchar(50)                        null,
+    create_time datetime default CURRENT_TIMESTAMP null,
+    create_by   varchar(255)                       null,
+    modify_time datetime                           null,
+    modify_by   varchar(255)                       null,
+    remark      varchar(1024)                      null
+);
+
 create table t_carbon_user
 (
     user_id varchar(36) not null primary key ,

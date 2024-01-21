@@ -17,7 +17,7 @@ class ProvinceMapperTest {
 
     @Test
     public void testSelectById(){
-        System.out.println(provinceMapper.findById("1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r"));
+        System.out.println(provinceMapper.findById("e8c1d90d-b855-11ee-8975-0242ac110002"));
     }
 
     @Test
