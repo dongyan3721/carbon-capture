@@ -5,7 +5,7 @@
         <span>切换数据</span>
       </div>
       <div class="change-output-options">
-        <span v-for="item in carbonYears" @click="handleCarbonQuery">{{item.label}}</span>
+        <span class="button-like-span" v-for="item in carbonYears" @click="handleCarbonQuery">{{item.label}}</span>
       </div>
     </div>
     <div id="app-32-map" class="is-full">
@@ -431,8 +431,17 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
 });
 const handleCarbonQuery = ()=>{
-  let solidPos = baseEarth.mapGroup.children[provinceIndex["北京市"]].position;
-  baseEarth.mapGroup.children[provinceIndex["北京市"]].children[2] = createLightPillar(solidPos.x, solidPos.y, 10)
+  let des = document.querySelectorAll(".tag-description")
+  des.forEach(element => {
+    element.parentNode.removeChild(element);
+  });
+
+  Object.keys(provinceIndex).forEach(province=>{
+    if(province!==""){
+      baseEarth.mapGroup.children[provinceIndex[province]].children = []
+      baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)))
+    }
+  })
   baseEarth.reActivate();
 }
 </script>
@@ -480,5 +489,8 @@ body,
   width: 100%;
   height: 70%;
   background-color: #3a3e3f;
+}
+.button-like-span{
+
 }
 </style>
