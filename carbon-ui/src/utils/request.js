@@ -3,7 +3,7 @@ import { ElNotification, ElMessage} from 'element-plus'
 import { getToken } from './auth.js'
 import errorCode from './errorCode'
 import { tansParams, blobValidate } from "./ruoyi";
-import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../baseAPIConfig.js";
+// import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../baseAPIConfig.js";
 
 // let downloadLoadingInstance;
 // 是否显示重新登录
@@ -81,7 +81,7 @@ const idConvert = (input)=>{
 // 创建axios实例
 const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
-  baseURL: baseStaticRecourseAPI[NOW_ENVIRONMENT],
+  baseURL: "http://localhostst:80",
   // 超时
   timeout: 10000,
   // 取消axios自动解析json，用自己定义的雪花算法id拦截器拦截

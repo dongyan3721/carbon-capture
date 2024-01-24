@@ -52,4 +52,5 @@ spring:
     show-sql: true
     generate-ddl: false
 #    database: mysql
-
+server:
+  port: 80
