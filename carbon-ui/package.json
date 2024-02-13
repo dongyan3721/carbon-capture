@@ -22,7 +22,8 @@
     "point-in-polygon": "^1.1.0",
     "three": "^0.136.0",
     "vue": "^3.3.11",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue3-puzzle-vcode": "^1.1.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.13",

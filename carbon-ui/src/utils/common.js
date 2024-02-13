@@ -55,7 +55,7 @@ export {dict_status}
 const generalValidatorJudgeIfEmpty = (msg)=>{
     return (rule, value, callback)=>{
         if(value===''||value===null){
-            callback(new Error(msg));
+            callback(new Error(`${msg}不能为空！`));
         }
         callback();
     }
