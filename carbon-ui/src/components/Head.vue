@@ -54,7 +54,7 @@ import {
   setLocalStorage
 } from "@/utils/localStorge";
 import {getToken, removeToken} from "@/utils/auth";
-import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../../baseAPIConfig.js";
+import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../config/baseAPIConfig.js";
 import router from "../router/index.js";
 
 export default {
