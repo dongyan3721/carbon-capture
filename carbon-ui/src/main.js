@@ -3,6 +3,7 @@ import App from './App.vue';
 import 'normalize.css';
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import 'vue-cropper/dist/index.css'
 import router from './router/index'
 import axios from 'axios'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

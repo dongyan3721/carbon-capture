@@ -9,7 +9,7 @@ import {createRouter, createWebHistory} from "vue-router/dist/vue-router";
 const routes = [
     {
         path: '/',
-        redirect: '/login'
+        redirect: '/self-center'
     },
     {
         name: 'index',
