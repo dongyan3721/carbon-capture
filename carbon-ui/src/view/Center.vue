@@ -102,7 +102,7 @@
             <img :src="dialogUploadFileList[0].url" alt="preview" :height="dialogImageHeight" :width="dialogImageWidth"/>
             <template #header><span style="color: #666666">头像预览</span></template>
           </el-dialog>
-          <el-form :model="modifyForm" ref="modifyFormRef" :inline="false" size="large">
+          <el-form :model="modifyForm" ref="modifyFormRef" :inline="false" size="large" :rules="modifyFormRules">
             <el-form-item>
               <el-upload
                   v-model:file-list="dialogUploadFileList"
@@ -110,6 +110,7 @@
                   list-type="picture-card"
                   :on-preview="handlePictureCardPreview"
                   :on-exceed="handleExceed"
+                  :on-remove="handleAvatarRemove"
                   :auto-upload="false"
                   :limit="1">
                 <template #default>
@@ -121,14 +122,43 @@
                 <span>我的头像</span>
               </template>
             </el-form-item>
-            <el-form-item>
+            <el-form-item prop="nickname">
               <template #label>
                 <el-icon size="large" color="#666666"><User/></el-icon>
                 <span>我的昵称</span>
               </template>
+              <el-input v-model="modifyForm.nickname" clearable/>
+            </el-form-item>
+            <el-form-item prop="email">
+              <template #label>
+                <el-icon size="large" color="#666666"><Message/></el-icon>
+                <span>绑定邮箱</span>
+              </template>
+              <el-input v-model="modifyForm.email" clearable/>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="danger" @click="submitModify(modifyFormRef)" size="large">确认修改</el-button>
+              <el-button type="primary" @click="resetModifyForm" size="large">重置</el-button>
+              <el-button type="warning" @click="openPasswordModifyDialog" size="large">修改密码</el-button>
             </el-form-item>
           </el-form>
-          <el-button type="primary" @click="openCropDialog" size="large">触发</el-button>
+          <el-dialog width="400px" append-to-body v-model="modifyPasswordDialogVis" @close="closePasswordModifyDialog">
+            <template #header>
+              <span style="color:#666666;">修改密码</span>
+            </template>
+            <el-form :rules="modifyPasswordFormRules" :model="modifyPasswordFrom" :inline="false" size="default" ref="modifyPasswordFromRef">
+              <el-form-item label="原密码" prop="originalPassword">
+                <el-input type="password" v-model="modifyPasswordFrom.originalPassword" clearable/>
+              </el-form-item>
+              <el-form-item label="新密码" prop="newPassword">
+                <el-input type="password" v-model="modifyPasswordFrom.newPassword" clearable/>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitModifyPassword(modifyPasswordFromRef)">确认修改</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
+<!--          <el-button type="primary" @click="openCropDialog" size="large">触发</el-button>-->
 <!--          <el-button type="primary" @click="enforceChangePicture" size="large">变图片</el-button>-->
         </el-main>
       </el-container>
@@ -138,13 +168,15 @@
 
 <script setup>
 import {useRoute} from "vue-router/dist/vue-router";
-import {ArrowRight, User, Edit, Finished, Scissor, Plus, Avatar} from "@element-plus/icons-vue";
+import {ArrowRight, User, Edit, Finished, Scissor, Plus, Avatar, Message} from "@element-plus/icons-vue";
 import {reactive, ref} from "vue";
 import {VueCropper} from "vue-cropper";
-import {getLocalStorage, KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_USER_ID} from "@/utils/localStorge";
+import {getLocalStorage, KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_USER_ID, setLocalStorage} from "@/utils/localStorge";
 import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "@/config/baseAPIConfig";
-import {compressImage} from "@/utils/dongyan";
-import {genFileId} from "element-plus";
+import {base64ToFile, compressImage, handleDataSubmitWithBlob} from "@/utils/dongyan";
+import {ElMessage, genFileId} from "element-plus";
+import {generalEmailValidator, nicknameLengthValidator} from "@/utils/common";
+import {modifyAvatar, modifyPassword, modifyUser} from "@/web-api/center";
 
 // 测试改变图片 pass
 /**const enforceChangePicture = ()=>{
@@ -159,6 +191,88 @@ import {genFileId} from "element-plus";
     }
   ]
 }*/
+
+const submitModifyPassword = (formRef)=>{
+  formRef.validate(valid=>{
+    if(valid){
+      modifyPassword(modifyPasswordFrom).then(res=>{
+        if(res.code===200){
+          ElMessage.success('修改成功！');
+          closePasswordModifyDialog();
+        }
+      })
+    }
+  })
+}
+const modifyPasswordFormRules = reactive({
+  originalPassword: [{validator: nicknameLengthValidator('原密码', 16, 6), trigger: 'blur'}],
+  newPassword: [{validator: nicknameLengthValidator('新密码', 16, 6), trigger: 'blur'}]
+})
+// 修改密码表单
+let modifyPasswordFrom = reactive({
+  userId: getLocalStorage(KEY_USER_ID),
+  originalPassword: '',
+  newPassword: ''
+})
+// 重置密码表单引用
+let modifyPasswordFromRef = ref();
+// 重置密码对话框表单重置
+const resetModifyPasswordFrom = ()=>{
+  if(!modifyPasswordFromRef.value){
+    return
+  }
+  modifyPasswordFromRef.value.resetFields();
+  modifyPasswordFrom.userId = getLocalStorage(KEY_USER_ID);
+  modifyPasswordFrom.originalPassword = null
+  modifyPasswordFrom.newPassword = null
+}
+// 修改密码对话框打开
+const openPasswordModifyDialog = ()=>{
+  modifyPasswordDialogVis.value = true;
+}
+// 修改密码对话框关闭
+const closePasswordModifyDialog = ()=>{
+  modifyPasswordDialogVis.value = false;
+  resetModifyPasswordFrom();
+}
+// 控制修改密码对话框可见性
+let modifyPasswordDialogVis = ref(false);
+// 最终提交修改结果
+const submitModify = (formRef)=>{
+  formRef.validate(valid=>{
+    if(valid){
+      if(recordWhetherAvatarHadBeenModified.value){
+        // 头像也被修改了，调用头像修改
+        let formData = new FormData()
+        formData.append('user', handleDataSubmitWithBlob(JSON.stringify(modifyForm)));
+        formData.append('avatar', base64ToFile(previewUrl.value, 'avatar.png'));
+        modifyAvatar(formData).then(res=>{
+          if(res.code===1000){
+            ElMessage.error('修改失败！邮箱已被绑定！')
+            return
+          }
+          setLocalStorage(KEY_NICKNAME, modifyForm.nickname);
+          setLocalStorage(KEY_EMAIL, modifyForm.email);
+          setLocalStorage(KEY_AVATAR, previewUrl.value);
+          resetModifyForm();
+          ElMessage.success('修改成功！')
+        })
+      }else{
+        // 头像没有被修改，只做了用户名和绑定邮箱号的修改
+        modifyUser(modifyForm).then(res=>{
+          if(res.code===1000){
+            ElMessage.error('修改失败！邮箱已被绑定！')
+            return
+          }
+          setLocalStorage(KEY_NICKNAME, modifyForm.nickname);
+          setLocalStorage(KEY_EMAIL, modifyForm.email);
+          resetModifyForm();
+          ElMessage.success('修改成功！')
+        })
+      }
+    }
+  })
+}
 
 let recordWhetherAvatarHadBeenModified = ref(false)
 let dialogImageHeight = ref('50px')
@@ -204,6 +318,10 @@ const handleExceed = (files) => {
   file.uid = genFileId()
   bodyUploadRef.value.handleStart(file)
 }
+// 由于只留一张，所以删除的时候认为头像没有被修改
+const handleAvatarRemove = (file)=>{
+  recordWhetherAvatarHadBeenModified.value = false
+}
 
 
 
@@ -223,7 +341,19 @@ let resetModifyForm = () =>{
     return
   }
   modifyFormRef.value.resetFields();
+  modifyForm.email = getLocalStorage(KEY_EMAIL);
+  modifyForm.nickname = getLocalStorage(KEY_NICKNAME);
+  modifyForm.userId = getLocalStorage(KEY_USER_ID);
+  dialogUploadFileList.value = [{
+    name: 'bbdc.png',
+    url: getLocalStorage(KEY_AVATAR)
+  }]
 }
+// 表单验证规则
+const modifyFormRules = reactive({
+  nickname: [{validator: nicknameLengthValidator('用户名', 32, 1), trigger: 'blur'}],
+  email: [{validator: generalEmailValidator('绑定邮箱'), trigger: 'blur'}]
+})
 
 
 
@@ -266,7 +396,7 @@ let cropperRef = ref()
 // 裁剪框上传部分图片列表，限一张
 let dialogUploadFileList = ref([{
   name: 'test.png',
-  url: 'https://i.b2b168.com/wrzimg.jpg'
+  url: getLocalStorage(KEY_AVATAR)
 }])
 const rotateLeft = () => {
   // 这个默认是旋转90度的，官网有说明
@@ -351,8 +481,8 @@ const quitLogin = ()=>{
   align-items: center;
 }
 
-.dialog-preview-image-wrapper{
+::v-deep .el-form-item__label{
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 </style>

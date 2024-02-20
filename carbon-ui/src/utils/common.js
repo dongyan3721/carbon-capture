@@ -69,6 +69,7 @@ const emptyValidator = ()=>{
 }
 export {emptyValidator}
 
+// 日后这个可能还要加特殊字符的验证，这里跟用户名长度判断分开
 const generalPasswordValidator = (attribute)=>{
     return (rule, value, callback)=>{
         if(value===''||value===null){
@@ -82,6 +83,19 @@ const generalPasswordValidator = (attribute)=>{
     }
 }
 export {generalPasswordValidator}
+
+export function nicknameLengthValidator(attribute, max_length, min_length){
+    return (rule, value, callback)=>{
+        if(value===''||value===null){
+            callback(new Error(`${attribute}不能为空！`))
+        }else if(value.length<min_length){
+            callback(new Error(`${attribute}长度过短！`))
+        }else if(value.length>max_length){
+            callback(new Error(`${attribute}长度过长！`))
+        }
+        callback();
+    }
+}
 
 const generalPhoneNumberValidator = (attribute)=>{
     let phonePattern = /^1[3456789]\d{9}$/
