@@ -22,16 +22,92 @@ const dict_yes_no = [
 ]
 export {dict_yes_no}
 
-// 字典-菜系
-const dict_cuisine = [
-    {label: '苏菜', value: '苏菜'}, {label: '鲁菜', value: '鲁菜'},
-    {label: '川菜', value: '川菜'}, {label: '湘菜', value: '湘菜'},
-    {label: '粤菜', value: '粤菜'}, {label: '浙菜', value: '浙菜'},
-    {label: '闽菜', value: '闽菜'}, {label: '徽菜', value: '徽菜'},
-    {label: '西式快餐', value: '西式快餐'}, {label: '西式正餐', value: '西式正餐'},
-    {label: '其他', value: '其他'}
+const dict_industry_belong = [
+    {
+        label: '钢铁',
+        value: '钢铁',
+        children: [
+            {
+                label: '加热炉尾气',
+                value: '加热炉尾气'
+            },
+            {
+                label: '重整炉顶煤气',
+                value: '重整炉顶煤气'
+            },
+            {
+                label: '其他',
+                value: '其他'
+            }
+        ]
+    },
+    {
+        label: '空气',
+        value: '空气',
+        children: [
+            {
+                label: '锅炉烟气中的二氧化碳',
+                value: '锅炉烟气中的二氧化碳'
+            },
+            {
+                label: '反应器的出口烟气',
+                value: '反应器的出口烟气'
+            },
+            {
+                label: '电厂尾部烟气',
+                value: '电厂尾部烟气'
+            },
+            {
+                label: '其他',
+                value: '其他'
+            }
+        ]
+    },
+    {
+        label: '燃煤电厂',
+        value: '燃煤电厂',
+        children: [
+            {
+                label: '二氧化碳捕集',
+                value: '二氧化碳捕集'
+            },
+            {
+                label: '其他',
+                value: '其他'
+            }
+        ]
+    },
+    {
+        label: '煤化工',
+        value: '煤化工',
+        children: [
+            {
+                label: '煤制甲醇',
+                value: '煤制甲醇'
+            },
+            {
+                label: '其他',
+                value: '其他'
+            }
+        ]
+    },
+    {
+        label: '水泥',
+        value: '水泥',
+        children: [
+            {
+                label: '尾气处理',
+                value: '尾气处理'
+            },
+            {
+                label: '其他',
+                value: '其他'
+            }
+        ]
+    }
 ]
-export {dict_cuisine}
+
+export {dict_industry_belong}
 
 // 字典，用户类型
 const dict_user_type = [
@@ -52,7 +128,7 @@ const dict_status = [
 export {dict_status}
 
 // 通用验证器，只验证字段是否为空
-const generalValidatorJudgeIfEmpty = (msg)=>{
+export const generalValidatorJudgeIfEmpty = (msg)=>{
     return (rule, value, callback)=>{
         if(value===''||value===null){
             callback(new Error(`${msg}不能为空！`));
@@ -60,14 +136,12 @@ const generalValidatorJudgeIfEmpty = (msg)=>{
         callback();
     }
 }
-export {generalValidatorJudgeIfEmpty}
 
-const emptyValidator = ()=>{
+export const emptyValidator = ()=>{
     return (rule, value, callback)=>{
         callback();
     }
 }
-export {emptyValidator}
 
 // 日后这个可能还要加特殊字符的验证，这里跟用户名长度判断分开
 const generalPasswordValidator = (attribute)=>{
@@ -135,5 +209,15 @@ export function sleep(delay) {
     let start = (new Date()).getTime();
     while ((new Date()).getTime() - start < delay) {
         continue;
+    }
+}
+
+export function generalNumericValidator(attribute){
+    return function (rule, value, callback) {
+        if(!isNumeric(value)){
+            callback(new Error(`${attribute}不是合法的数字！`));
+            return;
+        }
+        callback();
     }
 }
