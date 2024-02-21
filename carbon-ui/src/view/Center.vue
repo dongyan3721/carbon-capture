@@ -111,6 +111,8 @@
                   :on-preview="handlePictureCardPreview"
                   :on-exceed="handleExceed"
                   :on-remove="handleAvatarRemove"
+                  :on-change="handleAvatarInitialUpload"
+                  :before-remove="handleRejectRemove"
                   :auto-upload="false"
                   :limit="1">
                 <template #default>
@@ -317,6 +319,15 @@ const handleExceed = (files) => {
   const file = files[0]
   file.uid = genFileId()
   bodyUploadRef.value.handleStart(file)
+}
+const handleAvatarInitialUpload = (ev)=>{
+  cropOptions.img = URL.createObjectURL(ev.raw);
+  cropVis.value = true
+  dialogUploadFileList.value = []
+}
+// 拒绝删除
+const handleRejectRemove = file=>{
+  return false
 }
 // 由于只留一张，所以删除的时候认为头像没有被修改
 const handleAvatarRemove = (file)=>{
