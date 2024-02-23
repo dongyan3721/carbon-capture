@@ -4,6 +4,7 @@
  * @date 2024/1/24-00:09:36
  * -->
 <template>
+  <Header/>
   <div class="page-content-wrapper">
     <div class="province-map">
       <img src="https://img1.baidu.com/it/u=1012539018,2422192115&fm=253&fmt=auto&app=138&f=GIF?w=659&h=500" alt="dadas"/>
@@ -39,29 +40,26 @@
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
         <div class="item-content-decorate-right"/>
-        <ul>
-          <li>4234234</li>
-          <li>4234234</li>
-          <li>4234234</li>
-        </ul>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
       </el-col>
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
         <div class="item-content-decorate-right"/>
-        <ul>
-          <li>4234234</li>
-          <li>4234234</li>
-          <li>4234234</li>
-        </ul>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
       </el-col>
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
         <div class="item-content-decorate-right"/>
-        <ul>
-          <li>4234234</li>
-          <li>4234234</li>
-          <li>4234234</li>
-        </ul>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
       </el-col>
       <el-col :span="3"></el-col>
     </el-row>
@@ -69,7 +67,27 @@
 </template>
 
 <script setup>
+import {onMounted, onUnmounted, ref} from "vue";
+import Header from "@/components/Head";
+import ColumnInfoItem from "@/components/ColumnInfoItem";
 
+const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳斯0i0")
+const herf = ref('dfsidhweipdndancywqueqpwidmascnvsigfw')
+
+
+let columnWidth = ref(0);
+const columnWidthListener = function (ev){
+  columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
+  console.log(columnWidth.value)
+}
+
+onMounted(()=>{
+  window.addEventListener('resize', columnWidthListener);
+  columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
+})
+onUnmounted(()=>{
+  window.removeEventListener('resize', columnWidthListener);
+})
 </script>
 
 <style scoped>
@@ -96,6 +114,7 @@
   background-color: #f2f2f2;
   min-height: 200px;
   position: relative;
+  padding: 10px 0;
 }
 .province-map{
   display: flex;
