@@ -63,6 +63,9 @@
       </el-col>
       <el-col :span="3"></el-col>
     </el-row>
+    <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
+      <li v-for="i in count" :key="i" class="infinite-list-item">{{ i }}</li>
+    </ul>
   </div>
 </template>
 
@@ -70,6 +73,11 @@
 import {onMounted, onUnmounted, ref} from "vue";
 import Header from "@/components/Head";
 import ColumnInfoItem from "@/components/ColumnInfoItem";
+
+const count = ref(0)
+const load = () => {
+  count.value += 2
+}
 
 const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳斯0i0")
 const herf = ref('https://www.bilibili.com/')
@@ -147,5 +155,23 @@ onUnmounted(()=>{
   margin: 3px 5px -3px 5px;
   height: 2px;
   background-color: rgb(12, 76, 119);
+}
+.infinite-list {
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background: var(--el-color-primary-light-9);
+  margin: 10px;
+  color: var(--el-color-primary);
+}
+.infinite-list .infinite-list-item + .list-item {
+  margin-top: 10px;
 }
 </style>

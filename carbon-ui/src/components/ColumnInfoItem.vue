@@ -24,7 +24,7 @@ export default {
   },
   methods:{
     trimTitle(){
-      let maxLength = this.width * 0.65 / 16;
+      let maxLength = this.width * 0.65 / 18;
       if(this.title.length > maxLength){
         return `${this.title.substring(0, maxLength)}……`;
       }
