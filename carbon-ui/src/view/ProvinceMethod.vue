@@ -72,7 +72,7 @@ import Header from "@/components/Head";
 import ColumnInfoItem from "@/components/ColumnInfoItem";
 
 const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳斯0i0")
-const herf = ref('dfsidhweipdndancywqueqpwidmascnvsigfw')
+const herf = ref('https://www.bilibili.com/')
 
 
 let columnWidth = ref(0);

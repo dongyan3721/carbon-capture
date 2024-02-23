@@ -4,12 +4,12 @@
  * @date 2024/2/22-16:56:21
  * -->
 <template>
-  <div class="column-item-container">
+  <div class="column-item-container" @click="gotoTargetUrl">
     <div class="column-left-title">
       {{trimmedTitle}}
     </div>
     <div class="column-right-button">
-      <span>点击查看>></span>
+      <span style="cursor: pointer">点击查看>></span>
     </div>
   </div>
 </template>
@@ -29,6 +29,9 @@ export default {
         return `${this.title.substring(0, maxLength)}……`;
       }
       return this.title
+    },
+    gotoTargetUrl(){
+      window.open(this.url, 'newTab')
     }
   },
   computed:{
@@ -56,6 +59,7 @@ export default {
   align-items: center;
   height: 30px;
   width: 100%;
+  cursor: pointer;
 }
 .column-right-button{
   width: auto;
