@@ -46,6 +46,12 @@
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem v-for="_case in provincePolicy" :title="_case.title" :url="_case.url"  :width="columnWidth" :key="_case.policyId"/>
+      </el-col>
+      <el-col :span="6" class="item-content">
+        <div class="item-content-decorate-left"/>
+        <div class="item-content-decorate-right"/>
+        <ColumnInfoItem v-for="intent in provinceIntents" :url="intent.url" :width="columnWidth" :title="intent.title" :key="intent.intentId"/>
       </el-col>
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
@@ -53,26 +59,42 @@
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
         <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-      </el-col>
-      <el-col :span="6" class="item-content">
-        <div class="item-content-decorate-left"/>
-        <div class="item-content-decorate-right"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+        <ColumnInfoItem v-for="_case in provinceCases" :title="_case.title" :url="_case.url"  :width="columnWidth" :key="_case.caseId"/>
       </el-col>
       <el-col :span="3"></el-col>
     </el-row>
-    <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <li v-for="i in count" :key="i" class="infinite-list-item">{{ i }}</li>
-    </ul>
+<!--    <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">-->
+<!--      <li v-for="i in count" :key="i" class="infinite-list-item">{{ i }}</li>-->
+<!--    </ul>-->
+    <el-row style="margin: 10px 0">
+      <el-col :span="3"/>
+      <el-col :span="12">
+        <span class="column-header-content">省内新闻</span>
+      </el-col>
+      <el-col :span="9"/>
+    </el-row>
+    <el-row>
+      <el-col :span="3"/>
+      <el-col :span="12">
+        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
+        <InfiniteScrollNews v-for="news in provinceNews" :title="news.title" :content-url="news.contentUrl" :image-url="news.imageUrl" :key="news.newsId"/>
+      </el-col>
+      <el-col :span="9"/>
+    </el-row>
   </div>
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {onBeforeMount, onMounted, onUnmounted, ref} from "vue";
 import Header from "@/components/Head";
 import ColumnInfoItem from "@/components/ColumnInfoItem";
+import InfiniteScrollNews from '@/components/InfiniteScrollNews';
+import {
+  queryProvinceCase,
+  queryProvinceIntent,
+  queryProvinceNews,
+  queryProvincePolicy
+} from "@/web-api/province-method";
 
 const count = ref(0)
 const load = () => {
@@ -83,18 +105,65 @@ const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳�
 const herf = ref('https://www.bilibili.com/')
 
 
+
+let provinceCases = ref()
+let provinceIntents = ref()
+let provincePolicy = ref()
+// 无限滚动条下滚时候记录请求的页数
+let scrollPageNumber = ref(1)
+const handleScrollToBottom = function (){
+  queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 10}).then(res=>{
+    if(provinceNews.value.length<res.total){
+      provinceNews.value = provinceNews.value.concat(res.rows);
+      ++scrollPageNumber.value
+    }
+  })
+}
+let provinceNews = ref([])
+
+function requestNewsIntentCasePolicy(){
+  queryProvinceCase({pageNum: 1, pageSize: 6}).then(res=>{
+    provinceCases.value = res.rows;
+  })
+  queryProvinceIntent({pageNum: 1, pageSize: 6}).then(res=>{
+    provinceIntents.value = res.rows
+  })
+  queryProvincePolicy({pageNum: 1, pageSize: 6}).then(res=>{
+    provincePolicy.value = res.rows
+  })
+  handleScrollToBottom();
+}
+
+
+onBeforeMount(()=>{
+  // requestNewsIntentCasePolicy();
+})
+
 let columnWidth = ref(0);
+// 监听窗口大小变化事件
 const columnWidthListener = function (ev){
   columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
   console.log(columnWidth.value)
 }
+// 监听滚动事件
+const scrollListener = function (ev){
+  let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+  console.log('scrollTop=',scrollTop)
+  let bottomDistance = document.body.scrollHeight - document.documentElement.clientHeight - scrollTop;
+  if(bottomDistance<300){
+    // 请求新数据，判断新闻有没有完
+    // handleScrollToBottom();
+  }
+}
 
 onMounted(()=>{
   window.addEventListener('resize', columnWidthListener);
+  window.addEventListener('scroll', scrollListener);
   columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
 })
 onUnmounted(()=>{
   window.removeEventListener('resize', columnWidthListener);
+  window.removeEventListener('scroll', scrollListener);
 })
 </script>
 
@@ -157,7 +226,7 @@ onUnmounted(()=>{
   background-color: rgb(12, 76, 119);
 }
 .infinite-list {
-  height: 100vh;
+  height: 600px;
   padding: 0;
   margin: 0;
   list-style: none;
