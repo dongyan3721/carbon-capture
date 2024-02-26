@@ -77,6 +77,8 @@
       <el-col :span="3"/>
       <el-col :span="12">
         <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
+        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
+        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
         <InfiniteScrollNews v-for="news in provinceNews" :title="news.title" :content-url="news.contentUrl" :image-url="news.imageUrl" :key="news.newsId"/>
       </el-col>
       <el-col :span="9"/>
@@ -148,7 +150,7 @@ const columnWidthListener = function (ev){
 // 监听滚动事件
 const scrollListener = function (ev){
   let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
-  console.log('scrollTop=',scrollTop)
+  // console.log('scrollTop=',scrollTop)
   let bottomDistance = document.body.scrollHeight - document.documentElement.clientHeight - scrollTop;
   if(bottomDistance<300){
     // 请求新数据，判断新闻有没有完
@@ -160,6 +162,8 @@ onMounted(()=>{
   window.addEventListener('resize', columnWidthListener);
   window.addEventListener('scroll', scrollListener);
   columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
+  console.log(document.querySelector(".allow-touch-styles"))
+  console.log(document.querySelector(".children"))
 })
 onUnmounted(()=>{
   window.removeEventListener('resize', columnWidthListener);
@@ -224,23 +228,5 @@ onUnmounted(()=>{
   margin: 3px 5px -3px 5px;
   height: 2px;
   background-color: rgb(12, 76, 119);
-}
-.infinite-list {
-  height: 600px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.infinite-list .infinite-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  background: var(--el-color-primary-light-9);
-  margin: 10px;
-  color: var(--el-color-primary);
-}
-.infinite-list .infinite-list-item + .list-item {
-  margin-top: 10px;
 }
 </style>

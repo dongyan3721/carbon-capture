@@ -260,7 +260,7 @@ onMounted(async () => {
   // 四川数据
   let provinceData = await requestData('./data/map/中华人民共和国.json');
   provinceData = transfromGeoJSON(provinceData);
-  console.log(provinceData)
+  // console.log(provinceData)
   class CurrentEarth extends BaseEarth {
     constructor(props) {
       super(props);
@@ -434,6 +434,7 @@ onMounted(async () => {
   });
   baseEarth.run();
   window.addEventListener('resize', resize);
+  document.querySelector(".allow-touch-styles").remove()
 });
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
@@ -451,6 +452,7 @@ const handleCarbonQuery = ()=>{
     }
   })
   baseEarth.reActivate();
+  // 头颜色#19304c
 }
 </script>
 <style>

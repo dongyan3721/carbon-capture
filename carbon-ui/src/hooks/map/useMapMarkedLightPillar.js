@@ -116,7 +116,7 @@ export default function useMarkedLightPillar(options) {
             const height = heightScaleFactor
             // 柱体的geo,6.19=柱体图片高度/宽度的倍数
             const geometry = new THREE.PlaneBufferGeometry(height / 6.219, height)
-            console.log(geometry)
+            // console.log(geometry)
             // 柱体旋转90度，垂直于Y轴
             geometry.rotateX(Math.PI / 2)
             // 柱体的z轴移动高度一半对齐中心点
