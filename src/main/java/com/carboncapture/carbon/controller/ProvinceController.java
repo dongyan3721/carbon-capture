@@ -1,13 +1,10 @@
 package com.carboncapture.carbon.controller;
 
-import com.carboncapture.carbon.core.AjaxResult;
+import com.carboncapture.carbon.core.TableDataInfo;
 import com.carboncapture.carbon.entity.*;
 import com.carboncapture.carbon.service.ProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,34 +13,42 @@ public class ProvinceController {
     @Autowired
     private ProvinceService provinceService;
     @GetMapping("/province/case/query")
-    public AjaxResult queryProvinceCase(@RequestBody ProvinceCase provinceCase){
+    public TableDataInfo queryProvinceCase(@RequestBody ProvinceCase provinceCase,
+                                           @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+                                           @RequestParam(value = "pageSize", required = false, defaultValue = "6") int pageSize){
         List<ProvinceCase> caseList=provinceService.getCaselist(provinceCase);
-        return AjaxResult.success(caseList);
+        return TableDataInfo.pagination(caseList, caseList.size(), pageNum, pageSize);
     }
 
     @GetMapping("/province/intent/query")
-    public AjaxResult queryProvinceIntent(@RequestBody ProvinceIntent provinceIntent){
+    public TableDataInfo queryProvinceIntent(@RequestBody ProvinceIntent provinceIntent,
+                                             @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+                                             @RequestParam(value = "pageSize", required = false, defaultValue = "6") int pageSize){
         List<ProvinceIntent> provinceIntentList=provinceService.getIntentlist(provinceIntent);
-        return AjaxResult.success(provinceIntentList);
+        return TableDataInfo.pagination(provinceIntentList, provinceIntentList.size(), pageNum, pageSize);
     }
 
     @GetMapping("/province/policy/query")
-    public AjaxResult queryProvincePolicy(ProvincePolicy provincePolicy){
+    public TableDataInfo queryProvincePolicy(@RequestBody ProvincePolicy provincePolicy,
+                                             @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+                                             @RequestParam(value = "pageSize", required = false, defaultValue = "6") int pageSize){
         List<ProvincePolicy> provincePolicyList=provinceService.getPolicylist(provincePolicy);
-        return AjaxResult.success(provincePolicyList);
+        return TableDataInfo.pagination(provincePolicyList, provincePolicyList.size(), pageNum, pageSize);
     }
 
     @GetMapping("/province/news/query")
-    public AjaxResult queryProvinceNews(ProvinceNews provinceNews){
+    public TableDataInfo queryProvinceNews(@RequestBody ProvinceNews provinceNews,
+                                           @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize)
+    {
         List<ProvinceNews> provinceNewsList=provinceService.getNewslist(provinceNews);
-        return AjaxResult.success(provinceNews);
-
+        return TableDataInfo.pagination(provinceNewsList, provinceNewsList.size(), pageNum, pageSize);
     }
 
     @GetMapping("/province/carbon-output/{year}")
-    public AjaxResult requestCarbonOutput(@PathVariable String year){
+    public TableDataInfo requestCarbonOutput(@PathVariable String year){
         List<ProvinceCarbonOutput> provinceCarbonOutputList=provinceService.getTotalCarbonOutput(year);
-        return AjaxResult.success(provinceCarbonOutputList);
+        return TableDataInfo.success(provinceCarbonOutputList, provinceCarbonOutputList.size());
     }
 
 }
