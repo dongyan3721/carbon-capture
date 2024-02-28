@@ -14,6 +14,9 @@
         <ul>
           <li v-for="item in carbonYears"><span class="button-like-span" @click="handleCarbonQuery">{{item.label}}</span></li>
         </ul>
+        <div class="right-indication-year-area">
+          <span style="color: #f9f9f9; font-size: 15px">当前数据：{{nowYear}}年</span>
+        </div>
       </div>
     </div>
     <div id="app-32-map" class="is-full"></div>
@@ -35,7 +38,9 @@ import useMapMarkedLightPillar from '@/hooks/map/useMapMarkedLightPillar';
 import useSequenceFrameAnimate from '@/hooks/useSequenceFrameAnimate';
 import useCSS2DRender from '@/hooks/useCSS2DRender';
 import Header from "@/components/Head";
+import {requestCarbonOutput} from "@/web-api/request-carbon-output";
 
+let nowYear = ref('2020')
 let centerXY = [106.59893798828125, 26.918846130371094];
 
 const carbonYears = [{label: '2020', value: '2020'}, {label: '2015', value: '2015'},
@@ -238,10 +243,22 @@ const initLightPoint = (properties, mapGroup) => {
     return false
   }
   // 创建光柱
-  // TODO 改变逻辑为后台传输的数据
-  let heightScaleFactor = 0.4 + random(1, 5) / 5;
+  let heightScaleFactor;
+  let label;
+  try{
+    heightScaleFactor = carbonOutputReflection[properties.name].calculatedHeight
+  }catch (e) {
+    heightScaleFactor = 0.1
+  }
+
+  try{
+    label = carbonOutputReflection[properties.name].output+"万吨";
+  }catch (e) {
+    label = "暂无数据"
+  }
+
   let lightCenter = properties.centroid || properties.center;
-  let light = createLightPillar(...lightCenter, heightScaleFactor);
+  let light = createLightPillar(...lightCenter, heightScaleFactor, label);
   light.position.z = 0.31;
   mapGroup.add(light);
 };
@@ -424,17 +441,25 @@ onMounted(async () => {
       this.renderer.render(this.scene, this.camera);
     }
   }
-  baseEarth = new CurrentEarth({
-    container: '#app-32-map',
-    axesVisibel: true,
-    controls: {
-      enableDamping: true, // 阻尼
-      maxPolarAngle: (Math.PI / 2) * 0.98,
-    },
-  });
-  baseEarth.run();
+  requestCarbonOutput('2020').then(res=>{
+    carbonOutput.value = res.rows;
+    accommodatePolarHeight(carbonOutput.value);
+    carbonOutput.value.forEach(output=>{
+      carbonOutputReflection[output.provinceName] = output;
+    })
+    baseEarth = new CurrentEarth({
+      container: '#app-32-map',
+      axesVisibel: true,
+      controls: {
+        enableDamping: true, // 阻尼
+        maxPolarAngle: (Math.PI / 2) * 0.98,
+      },
+    });
+    baseEarth.run();
+    document.querySelector(".allow-touch-styles").remove()
+  })
+
   window.addEventListener('resize', resize);
-  document.querySelector(".allow-touch-styles").remove()
 });
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
@@ -442,10 +467,7 @@ onBeforeUnmount(() => {
 });
 
 let carbonOutput = ref([])
-watch(carbonOutput, (newValue, oldValue)=>{
-  // TODO 适应光柱高度，设置新的光柱并显示数字
-  accommodatePolarHeight(carbonOutput.value);
-})
+let carbonOutputReflection = reactive({})
 
 const accommodatePolarHeight = function (outputList){
   let max = 0;
@@ -459,19 +481,33 @@ const accommodatePolarHeight = function (outputList){
   })
 }
 
-const handleCarbonQuery = ()=>{
-  let des = document.querySelectorAll(".tag-description")
-  des.forEach(element => {
-    element.parentNode.removeChild(element);
-  });
+const handleCarbonQuery = (ev)=>{
 
-  Object.keys(provinceIndex).forEach(province=>{
-    if(province!==""){
-      baseEarth.mapGroup.children[provinceIndex[province]].children = []
-      // TODO 调整为已调整的高度
-      baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)), '修改标签名')
-    }
+  nowYear.value = ev.currentTarget.innerText;
+  requestCarbonOutput(nowYear.value).then(res=>{
+
+    let des = document.querySelectorAll(".tag-description")
+    des.forEach(element => {
+      element.parentNode.removeChild(element);
+    });
+
+    carbonOutput.value = res.rows;
+    accommodatePolarHeight(carbonOutput.value);
+    carbonOutput.value.forEach(output=>{
+      carbonOutputReflection[output.provinceName] = output;
+    })
+    Object.keys(carbonOutputReflection).forEach(province=>{
+      baseEarth.mapGroup.children[provinceIndex[province]].children = [];
+      baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, carbonOutputReflection[province].calculatedHeight, carbonOutputReflection[province].output+"万吨"))
+    })
   })
+  // Object.keys(provinceIndex).forEach(province=>{
+  //   if(province!==""){
+  //     baseEarth.mapGroup.children[provinceIndex[province]].children = []
+  //     // TODO 调整为已调整的高度
+  //     baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)), '修改标签名')
+  //   }
+  // })
   baseEarth.reActivate();
   // 头颜色#19304c
 }
@@ -546,5 +582,12 @@ body,
 }
 .avatar-to-render-navigator{
   color: #32a9c4 !important;
+}
+.right-indication-year-area{
+  display: flex;
+  width: 65%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 </style>
