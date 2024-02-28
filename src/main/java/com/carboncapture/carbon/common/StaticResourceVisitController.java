@@ -1,6 +1,7 @@
 package com.carboncapture.carbon.common;
 
 import com.carboncapture.carbon.framework.config.StaticValueConfig;
+import com.carboncapture.carbon.utils.AutoInferenceContentTypeUtils;
 import com.carboncapture.carbon.utils.FileUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +36,7 @@ public class StaticResourceVisitController {
         }
         String fullPath = StaticValueConfig.getUploadPath() + resourceName;
         System.out.println(fullPath);
-        response.setContentType(MediaType.IMAGE_PNG_VALUE);
+        response.setContentType(AutoInferenceContentTypeUtils.inference(resourceName));
         FileUtils.setAttachmentResponseHeader(response, resourceName);
         FileUtils.writeBytes(fullPath, response.getOutputStream());
     }

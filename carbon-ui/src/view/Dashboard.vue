@@ -504,7 +504,6 @@ const handleCarbonQuery = (ev)=>{
   // Object.keys(provinceIndex).forEach(province=>{
   //   if(province!==""){
   //     baseEarth.mapGroup.children[provinceIndex[province]].children = []
-  //     // TODO 调整为已调整的高度
   //     baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)), '修改标签名')
   //   }
   // })
