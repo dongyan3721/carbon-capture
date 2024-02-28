@@ -25,7 +25,7 @@ import BaseEarth from '@/utils/Earth.js';
 import TWEEN from '@tweenjs/tween.js';
 import * as THREE from 'three';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import {onBeforeUnmount, onMounted, reactive} from 'vue';
+import {onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue';
 import { random } from '@/utils';
 import useFileLoader from '@/hooks/useFileLoader.js';
 import useCountry from '@/hooks/useCountry.js';
@@ -438,7 +438,27 @@ onMounted(async () => {
 });
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
+  baseEarth.empty();
 });
+
+let carbonOutput = ref([])
+watch(carbonOutput, (newValue, oldValue)=>{
+  // TODO 适应光柱高度，设置新的光柱并显示数字
+  accommodatePolarHeight(carbonOutput.value);
+})
+
+const accommodatePolarHeight = function (outputList){
+  let max = 0;
+  outputList.forEach(output=>{
+    if(max<output.output){
+      max = output.output
+    }
+  })
+  outputList.map(output=>{
+    output.calculatedHeight = output.output / max * 10;
+  })
+}
+
 const handleCarbonQuery = ()=>{
   let des = document.querySelectorAll(".tag-description")
   des.forEach(element => {
@@ -448,7 +468,8 @@ const handleCarbonQuery = ()=>{
   Object.keys(provinceIndex).forEach(province=>{
     if(province!==""){
       baseEarth.mapGroup.children[provinceIndex[province]].children = []
-      baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)))
+      // TODO 调整为已调整的高度
+      baseEarth.mapGroup.children[provinceIndex[province]].add(createLightPillar(0, 0, random(4, 6)), '修改标签名')
     }
   })
   baseEarth.reActivate();
@@ -516,5 +537,14 @@ body,
 .button-like-span:hover{
   cursor: pointer;
   text-decoration: underline;
+}
+.head-component-container{
+  background-color: #040527;
+}
+.head-component-container p{
+  color: #f9f9f9;
+}
+.avatar-to-render-navigator{
+  color: #32a9c4 !important;
 }
 </style>

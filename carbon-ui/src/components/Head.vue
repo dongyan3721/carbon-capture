@@ -1,47 +1,49 @@
 <template>
-  <el-header>
-    <el-row>
-      <el-col :span="4">
-        <div class="grid-content ep-bg-purple"/>
-      </el-col>
-      <el-col :span="8">
-        <div class="row-item restaurant-img-text-holder" style="display: flex; align-items: center; justify-content: center">
-          <router-link to="/index" style="display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--el-index-normal)">
-            <img src="@/assets/restaurant.svg" alt="食堂点评"/>
-            <p>上海理工大学一站式碳捕集服务平台</p>
-          </router-link>
-        </div>
-      </el-col>
-      <el-col :span="4">
-        <div class="grid-content ep-bg-purple-light"/>
-      </el-col>
-      <el-col :span="4">
-        <div class="grid-content ep-bg-purple"/>
-      </el-col>
-      <el-col :span="4">
-        <div class="avatar-login-logout row-item" style="display: flex; align-items: center;">
-          <router-link to="/top-manager" v-if="showTop">系统后台</router-link>
-          <router-link to="/restaurant-manager" v-if="showRest">食堂后台</router-link>
-          <router-link to="/login" v-if="showLoginOrRegister">登录</router-link>
-          <router-link to="/register" v-if="showLoginOrRegister">注册</router-link>
+  <div class="head-component-container">
+    <el-header>
+      <el-row>
+        <el-col :span="4">
+          <div class="grid-content ep-bg-purple"/>
+        </el-col>
+        <el-col :span="8">
+          <div class="row-item restaurant-img-text-holder" style="display: flex; align-items: center; justify-content: center">
+            <router-link to="/index" style="display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--el-index-normal)">
+              <img src="@/assets/restaurant.svg" alt="碳补集"/>
+              <p>上海理工大学一站式碳捕集服务平台</p>
+            </router-link>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content ep-bg-purple-light"/>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content ep-bg-purple"/>
+        </el-col>
+        <el-col :span="4">
+          <div class="avatar-login-logout row-item" style="display: flex; align-items: center;">
+            <router-link to="/top-manager" v-if="showTop" class="avatar-to-render-navigator">系统后台</router-link>
+            <router-link to="/restaurant-manager" v-if="showRest" class="avatar-to-render-navigator">食堂后台</router-link>
+            <router-link to="/login" v-if="showLoginOrRegister" class="avatar-to-render-navigator">登录</router-link>
+            <router-link to="/register" v-if="showLoginOrRegister" class="avatar-to-render-navigator">注册</router-link>
 
-          <el-dropdown v-if="!showLoginOrRegister">
+            <el-dropdown v-if="!showLoginOrRegister">
         <span class="el-dropdown-link"
               style="display: flex; align-items: center; justify-content: center;">
           <el-avatar :size="24" :src="src" style="margin: 0 5px"/>
           {{'欢迎您，'+ nickname }}
         </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>个人中心</el-dropdown-item>
-                <el-dropdown-item @click.native="quitLogin">退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-      </el-col>
-    </el-row>
-  </el-header>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>个人中心</el-dropdown-item>
+                  <el-dropdown-item @click.native="quitLogin">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </el-col>
+      </el-row>
+    </el-header>
+  </div>
 </template>
 
 <script>
