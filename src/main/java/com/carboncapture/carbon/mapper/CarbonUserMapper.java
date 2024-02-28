@@ -8,14 +8,13 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
-
 public interface CarbonUserMapper {
 
     /**
      * 根据用户名和密码查询用户
      * @return
      */
-    @Select("select * from user where user_id=#{userId} and nickname=#{nickname} ")
+    @Select("select * from t_carbon_user where email=#{email} and password=#{password} ")
     CarbonUser getByIdAndName(CarbonUser c);
 
 
@@ -24,7 +23,7 @@ public interface CarbonUserMapper {
      * @param user
      */
 
-    @Insert("insert into t_carbon_user(user_id, user_type, email,password,nickname,avatar) values(#{userId},#{userType},#{email},#{password},#{nickname},#{avatar})")
+    @Insert("insert into t_carbon_user(user_id, email,password,nickname,avatar) values(UUID(),#{email},#{password},#{nickname},#{avatar})")
     void insert(CarbonUser user);
 
     /**
@@ -67,9 +66,13 @@ public interface CarbonUserMapper {
     @Select("select * from t_carbon_user_belong where user_id=#{userId}")
     CarbonUerBelong getBelongById(String id);
 
-    @Insert("insert into t_carbon_user_belong(user_id, user_nickname, province_id,province_name,industry,industry_process,blur_carbon_output) values(#{userId},#{userNickname},#{provinceId},#{provinceName},#{industry},#{industryProcess},#{blurCarbonOutput})")
+    @Insert("insert into t_carbon_user_belong(belong_id, user_id, user_nickname, province_id,province_name,industry,industry_process,blur_carbon_output) values(UUID(), #{userId},#{userNickname},#{provinceId},#{provinceName},#{industry},#{industryProcess},#{blurCarbonOutput})")
     void addUserBelong(CarbonUerBelong c);
 
     @Update("update t_carbon_user_belong set user_nickname=#{userNickname},province_id=#{provinceId},province_name=#{provinceName},industry=#{industry},industry_process=#{industryProcess},blur_carbon_output=#{blurCarbonOutput}")
     void changeUserBelong(CarbonUerBelong c);
+
+
+    @Select("select * from t_carbon_user where email = #{email}")
+    CarbonUser selectUserByEmail(CarbonUser user);
 }

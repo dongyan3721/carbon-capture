@@ -54,3 +54,6 @@ spring:
 #    database: mysql
 server:
   port: 80
+
+mybatis:
+  configLocation: classpath:mybatis/mybatis-config.xml

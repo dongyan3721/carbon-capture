@@ -59,5 +59,8 @@ public class CarbonUserImpl implements CarbonUserService {
         carbonUserMapper.changeUserBelong(c);
     }
 
-
+    @Override
+    public CarbonUser selectUserByEmail(CarbonUser user) {
+        return carbonUserMapper.selectUserByEmail(user);
+    }
 }

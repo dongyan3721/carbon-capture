@@ -22,20 +22,20 @@ public class LoginController {
     @PostMapping("/user/login")
     public AjaxResult login(@RequestBody CarbonUser user){
         log.info("员工登录");
-        user =carbonUserService.login(user);
-
+        CarbonUser selectedUser =carbonUserService.login(user);
         //登录成功，生成JWT令牌，下发令牌
-        if(user!=null){
+        if(selectedUser!=null){
             Map<String,Object> claims=new HashMap<>();
-            claims.put("userId",user.getUserId());
-            claims.put("userType",user.getUserType());
-            claims.put("email",user.getEmail());
-            claims.put("nickname",user.getNickname());
-            claims.put("avatar",user.getAvatar());
-            claims.put("password",user.getPassword());
+            claims.put("userId",selectedUser.getUserId());
+//            claims.put("userType",selectedUser.getUserType());
+            claims.put("email",selectedUser.getEmail());
+//            claims.put("nickname",selectedUser.getNickname());
+//            claims.put("avatar",selectedUser.getAvatar());
+//            claims.put("password",selectedUser.getPassword());
 
             String jwt= JwtUtils.generateJwt(claims);//生成jwt并且包含了登录员工的信息
-            return AjaxResult.success(jwt);
+            selectedUser.setPassword("114514");
+            return AjaxResult.success(selectedUser).put("token", jwt);
         }
         //登录失败，返回错误信息
         return AjaxResult.error("账号或密码错误");

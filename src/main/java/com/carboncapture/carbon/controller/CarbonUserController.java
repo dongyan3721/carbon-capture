@@ -2,6 +2,7 @@ package com.carboncapture.carbon.controller;
 
 import com.carboncapture.carbon.core.AjaxResult;
 import com.carboncapture.carbon.entity.CarbonUser;
+import com.carboncapture.carbon.entity.passwordmodify.ModifyEntity;
 import com.carboncapture.carbon.service.CarbonUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,14 @@ public class CarbonUserController {
 //
 //    }
 
-    @PutMapping("/user/{password}")
-    public AjaxResult modifyPassword(@RequestParam String id,@RequestParam String password){
-        carbonUserService.changeCode(id,password);
-        return AjaxResult.success();
+    @PutMapping("/user/modify-password")
+    public AjaxResult modifyPassword(@RequestBody ModifyEntity modifyEntity){
+        CarbonUser userDetail = carbonUserService.getUserDetail(modifyEntity.getUserId());
+        if(userDetail.getPassword().equals(modifyEntity.getOriginalPassword())){
+            carbonUserService.changeCode(modifyEntity.getUserId(), modifyEntity.getNewPassword());
+            return AjaxResult.success();
+        }
+        return AjaxResult.error("原始密码错误！");
     }
 
 }

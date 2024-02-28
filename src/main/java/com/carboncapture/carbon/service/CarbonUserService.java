@@ -20,4 +20,6 @@ public interface CarbonUserService {
     void addUserBelong(CarbonUerBelong c);
 
     void changeUserBelong(CarbonUerBelong c);
+
+    public CarbonUser selectUserByEmail(CarbonUser user);
 }

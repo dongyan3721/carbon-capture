@@ -1,7 +1,6 @@
 package com.carboncapture.carbon.entity;
 
 import com.carboncapture.carbon.entity.base.BaseEntity;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,18 +15,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "t_provinces")
 public class Province extends BaseEntity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "region_name")
     private String regionName;
 
-    @Column(name = "capital")
     private String capital;
 }

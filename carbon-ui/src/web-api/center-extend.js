@@ -33,7 +33,7 @@ export function addUserBelong(data){
 // 修改用户行业信息，参数为带belongId的UserBelong类
 export function modifyUserBelong(data){
     return request({
-        url: 'user-belong/add',
+        url: 'user-belong/modify',
         method: 'put',
         data
     })
