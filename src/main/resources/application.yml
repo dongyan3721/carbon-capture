@@ -53,7 +53,10 @@ spring:
     generate-ddl: false
 #    database: mysql
 server:
-  port: 80
+  port: 8080
 
 mybatis:
   configLocation: classpath:mybatis/mybatis-config.xml
+
+backend:
+  uploadPath: D:/sa/uploadPath/

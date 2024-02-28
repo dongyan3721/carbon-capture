@@ -30,7 +30,7 @@ public class CarbonUserImpl implements CarbonUserService {
     public int modifyUser(CarbonUser user) {
         //首先查询邮箱是否重复
         CarbonUser u=carbonUserMapper.selectByEmail(user.getEmail());
-        if(u!=null){
+        if(u!=null&&(!u.getUserId().equals(user.getUserId()))){
             //邮箱重复
             return 1000;
         }
