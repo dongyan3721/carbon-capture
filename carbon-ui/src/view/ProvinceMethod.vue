@@ -40,12 +40,12 @@
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
         <div class="item-content-decorate-right"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
         <ColumnInfoItem v-for="_case in provincePolicy" :title="_case.title" :url="_case.url"  :width="columnWidth" :key="_case.policyId"/>
       </el-col>
       <el-col :span="6" class="item-content">
@@ -56,9 +56,9 @@
       <el-col :span="6" class="item-content">
         <div class="item-content-decorate-left"/>
         <div class="item-content-decorate-right"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
-        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
+<!--        <ColumnInfoItem :title="t" :url="herf" :width="columnWidth"/>-->
         <ColumnInfoItem v-for="_case in provinceCases" :title="_case.title" :url="_case.url"  :width="columnWidth" :key="_case.caseId"/>
       </el-col>
       <el-col :span="3"></el-col>
@@ -77,8 +77,8 @@
       <el-col :span="3"/>
       <el-col :span="12">
         <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
-        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
-        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
+<!--        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>-->
+<!--        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>-->
         <InfiniteScrollNews v-for="news in provinceNews" :title="news.title" :content-url="news.contentUrl" :image-url="news.imageUrl" :key="news.newsId"/>
       </el-col>
       <el-col :span="9"/>
@@ -107,14 +107,14 @@ const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳�
 const herf = ref('https://www.bilibili.com/')
 
 
-
+let provinceId = ref("e8c1e715-b855-11ee-8975-0242ac110002")
 let provinceCases = ref()
 let provinceIntents = ref()
 let provincePolicy = ref()
 // 无限滚动条下滚时候记录请求的页数
 let scrollPageNumber = ref(1)
 const handleScrollToBottom = function (){
-  queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 10}).then(res=>{
+  queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 10, provinceId: provinceId.value}).then(res=>{
     if(provinceNews.value.length<res.total){
       provinceNews.value = provinceNews.value.concat(res.rows);
       ++scrollPageNumber.value
@@ -124,13 +124,13 @@ const handleScrollToBottom = function (){
 let provinceNews = ref([])
 
 function requestNewsIntentCasePolicy(){
-  queryProvinceCase({pageNum: 1, pageSize: 6}).then(res=>{
+  queryProvinceCase({pageNum: 1, pageSize: 6, provinceId: provinceId.value}).then(res=>{
     provinceCases.value = res.rows;
   })
-  queryProvinceIntent({pageNum: 1, pageSize: 6}).then(res=>{
+  queryProvinceIntent({pageNum: 1, pageSize: 6, provinceId: provinceId.value}).then(res=>{
     provinceIntents.value = res.rows
   })
-  queryProvincePolicy({pageNum: 1, pageSize: 6}).then(res=>{
+  queryProvincePolicy({pageNum: 1, pageSize: 6, provinceId: provinceId.value}).then(res=>{
     provincePolicy.value = res.rows
   })
   handleScrollToBottom();
@@ -138,13 +138,13 @@ function requestNewsIntentCasePolicy(){
 
 
 onBeforeMount(()=>{
-  // requestNewsIntentCasePolicy();
+  requestNewsIntentCasePolicy();
 })
 
 let columnWidth = ref(0);
 // 监听窗口大小变化事件
 const columnWidthListener = function (ev){
-  columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
+  columnWidth.value = document.querySelector(".item-content").offsetWidth;
   console.log(columnWidth.value)
 }
 // 监听滚动事件
@@ -161,7 +161,7 @@ const scrollListener = function (ev){
 onMounted(()=>{
   window.addEventListener('resize', columnWidthListener);
   window.addEventListener('scroll', scrollListener);
-  columnWidth.value = document.querySelector(".column-item-container").offsetWidth;
+  columnWidth.value = document.querySelector(".item-content").offsetWidth;
   console.log(document.querySelector(".allow-touch-styles"))
   console.log(document.querySelector(".children"))
 })

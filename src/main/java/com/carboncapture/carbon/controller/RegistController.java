@@ -2,6 +2,7 @@ package com.carboncapture.carbon.controller;
 
 import com.carboncapture.carbon.core.AjaxResult;
 import com.carboncapture.carbon.entity.CarbonUser;
+import com.carboncapture.carbon.framework.annotation.AccessWithoutVerification;
 import com.carboncapture.carbon.service.CarbonUserService;
 import com.carboncapture.carbon.utils.RandomLengthStringGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegistController {
     @Autowired
     private CarbonUserService carbonUserService;
+
+    @AccessWithoutVerification
     @PostMapping("/user/add")
     public AjaxResult regist(@RequestBody CarbonUser user){
         if(carbonUserService.selectUserByEmail(user)!=null){

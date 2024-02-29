@@ -1,6 +1,10 @@
-package com.carboncapture.carbon.common;
+package com.carboncapture.carbon.controller.commoncontroller;
 
+import com.carboncapture.carbon.core.HttpStatus;
+import com.carboncapture.carbon.framework.annotation.AccessWithoutVerification;
 import com.carboncapture.carbon.framework.config.StaticValueConfig;
+import com.carboncapture.carbon.framework.exception.ServiceException;
+import com.carboncapture.carbon.framework.exception.UnsupportedFileExtensionException;
 import com.carboncapture.carbon.utils.AutoInferenceContentTypeUtils;
 import com.carboncapture.carbon.utils.FileUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -36,16 +42,30 @@ public class StaticResourceVisitController {
         }
         String fullPath = StaticValueConfig.getUploadPath() + resourceName;
         System.out.println(fullPath);
-        response.setContentType(AutoInferenceContentTypeUtils.inference(resourceName));
-        FileUtils.setAttachmentResponseHeader(response, resourceName);
-        FileUtils.writeBytes(fullPath, response.getOutputStream());
+        try {
+            response.setContentType(AutoInferenceContentTypeUtils.inference(resourceName));
+        } catch (UnsupportedFileExtensionException e) {
+            throw new ServiceException("不支持的文件类型！", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            FileUtils.setAttachmentResponseHeader(response, resourceName);
+        } catch (UnsupportedEncodingException e) {
+            throw new ServiceException("网络错误！", HttpStatus.ERROR);
+        }
+        try {
+            FileUtils.writeBytes(fullPath, response.getOutputStream());
+        } catch (IOException e) {
+            throw new ServiceException("网络错误！", HttpStatus.ERROR);
+        }
     }
 
+    @AccessWithoutVerification
     @RequestMapping(value = "/static/**", method = RequestMethod.GET)
     public void getStaticResourceGet(HttpServletResponse response, HttpServletRequest request) throws Exception {
         privateService(response, request);
     }
 
+    @AccessWithoutVerification
     @RequestMapping(value = "/static/**", method = RequestMethod.POST)
     public void getStaticResourcePost(HttpServletResponse response, HttpServletRequest request) throws Exception {
         privateService(response, request);
