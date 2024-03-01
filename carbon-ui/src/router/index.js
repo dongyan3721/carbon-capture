@@ -80,7 +80,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from , next)=>{
-    if(to.name==='index'||to.name==='register'||to.name==='login'||to.name==='403'||to.name==='404') {
+    if(to.name==='index'||to.name==='register'||to.name==='login'||to.name==='403'||to.name==='404'||to.name==='province') {
         next();
         return
     }
@@ -93,10 +93,9 @@ router.beforeEach((to, from , next)=>{
             setToken(res.token);
             return
         }
-        if(res.code===HttpStatus.UNAUTHORIZED){
-            clearLocalStorage();
-            next("/index")
-        }
+    }).catch(err=>{
+        clearLocalStorage();
+        next("/index")
     })
 })
 

@@ -1,6 +1,7 @@
 package com.carboncapture.carbon.controller.commoncontroller;
 
 import com.carboncapture.carbon.core.AjaxResult;
+import com.carboncapture.carbon.framework.annotation.AccessWithoutVerification;
 import com.carboncapture.carbon.framework.annotation.EnableProlongTokenSurvival;
 import com.carboncapture.carbon.framework.exception.UnAuthenticatedException;
 import com.carboncapture.carbon.utils.JwtUtils;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProlongTokenSurvivalController {
 
     @GetMapping("/token")
+    @AccessWithoutVerification
     @EnableProlongTokenSurvival
     public AjaxResult checkProlongTokenSurvival(@RequestHeader(JwtUtils.TOKEN) String token) throws UnAuthenticatedException {
         return AjaxResult.success("success").put(JwtUtils.TOKEN, JwtUtils.sign(JwtUtils.verify(token)));

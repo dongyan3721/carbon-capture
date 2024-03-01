@@ -1,4 +1,4 @@
-package com.carboncapture.carbon.framework.config;
+package com.carboncapture.carbon.core;
 
 /**
  * @author Santa Antilles

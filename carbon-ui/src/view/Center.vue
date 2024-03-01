@@ -173,12 +173,22 @@ import {useRoute} from "vue-router/dist/vue-router";
 import {ArrowRight, User, Edit, Finished, Scissor, Plus, Avatar, Message} from "@element-plus/icons-vue";
 import {reactive, ref} from "vue";
 import {VueCropper} from "vue-cropper";
-import {getLocalStorage, KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_USER_ID, setLocalStorage} from "@/utils/localStorge";
+import {
+  getLocalStorage,
+  KEY_AVATAR,
+  KEY_EMAIL,
+  KEY_NICKNAME,
+  KEY_RESTAURANT_ID, KEY_ROLE,
+  KEY_USER_ID, KEY_USER_NAME,
+  setLocalStorage
+} from "@/utils/localStorge";
 import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "@/config/baseAPIConfig";
 import {base64ToFile, compressImage, handleDataSubmitWithBlob} from "@/utils/dongyan";
 import {ElMessage, genFileId} from "element-plus";
 import {generalEmailValidator, nicknameLengthValidator} from "@/utils/common";
 import {modifyAvatar, modifyPassword, modifyUser} from "@/web-api/center";
+import router from "@/router";
+import {removeToken} from "@/utils/auth";
 
 // 测试改变图片 pass
 /**const enforceChangePicture = ()=>{
@@ -246,30 +256,27 @@ const submitModify = (formRef)=>{
       if(recordWhetherAvatarHadBeenModified.value){
         // 头像也被修改了，调用头像修改
         let formData = new FormData()
-        formData.append('user', handleDataSubmitWithBlob(JSON.stringify(modifyForm)));
+        formData.append('user', handleDataSubmitWithBlob(modifyForm));
         formData.append('avatar', base64ToFile(previewUrl.value, 'avatar.png'));
         modifyAvatar(formData).then(res=>{
-          if(res.code===1000){
-            ElMessage.error('修改失败！邮箱已被绑定！')
-            return
-          }
           setLocalStorage(KEY_NICKNAME, modifyForm.nickname);
           setLocalStorage(KEY_EMAIL, modifyForm.email);
           setLocalStorage(KEY_AVATAR, previewUrl.value);
           resetModifyForm();
           ElMessage.success('修改成功！')
+        }).catch(err=>{
+          ElMessage.error('修改失败！邮箱已被绑定！')
         })
       }else{
         // 头像没有被修改，只做了用户名和绑定邮箱号的修改
         modifyUser(modifyForm).then(res=>{
-          if(res.code===1000){
-            ElMessage.error('修改失败！邮箱已被绑定！')
-            return
-          }
           setLocalStorage(KEY_NICKNAME, modifyForm.nickname);
           setLocalStorage(KEY_EMAIL, modifyForm.email);
           resetModifyForm();
           ElMessage.success('修改成功！')
+        }).catch(err=>{
+          ElMessage.error('修改失败！邮箱已被绑定！')
+          return
         })
       }
     }
@@ -459,14 +466,22 @@ let currentUrl = ref(route.path);
 let nickname = getLocalStorage(KEY_NICKNAME);
 
 // 数据库存的东西是相对路径，这里方便切换环境
-let avatarSrc = baseStaticRecourseAPI[NOW_ENVIRONMENT]+getLocalStorage(KEY_AVATAR);
+let avatarSrc = getLocalStorage(KEY_AVATAR);
 
 const gotoIndex = ()=>{
-
+  router.push("/index")
 }
 
 const quitLogin = ()=>{
-
+  removeToken();
+  setLocalStorage(KEY_NICKNAME, null);
+  setLocalStorage(KEY_AVATAR, null);
+  setLocalStorage(KEY_RESTAURANT_ID, null);
+  setLocalStorage(KEY_ROLE, null);
+  setLocalStorage(KEY_USER_ID, null);
+  setLocalStorage(KEY_USER_NAME, null);
+  router.push("/index")
+  location.reload();
 }
 </script>
 

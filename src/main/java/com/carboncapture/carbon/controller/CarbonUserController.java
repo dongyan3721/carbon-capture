@@ -29,6 +29,7 @@ public class CarbonUserController {
 
     @PutMapping("/user/modify")
     public AjaxResult modifyUser(@RequestBody CarbonUser user){
+        user.setAvatar(carbonUserService.getUserDetail(user.getUserId()).getAvatar());
         int flag=carbonUserService.modifyUser(user);
         if(flag==200){
             return AjaxResult.success("修改成功");

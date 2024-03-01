@@ -52,8 +52,8 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>返回首页</el-dropdown-item>
-                  <el-dropdown-item>退出登录</el-dropdown-item>
+                  <el-dropdown-item @click.native="gotoIndex">返回首页</el-dropdown-item>
+                  <el-dropdown-item @click.native="quitLogin">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -105,7 +105,14 @@
 import {useRoute} from "vue-router/dist/vue-router";
 import {ArrowRight, User, Edit, Finished} from "@element-plus/icons-vue";
 import {onBeforeMount, reactive, ref} from "vue";
-import {getLocalStorage, KEY_AVATAR, KEY_NICKNAME, KEY_USER_ID} from "@/utils/localStorge";
+import {
+  getLocalStorage,
+  KEY_AVATAR,
+  KEY_NICKNAME,
+  KEY_RESTAURANT_ID, KEY_ROLE,
+  KEY_USER_ID, KEY_USER_NAME,
+  setLocalStorage
+} from "@/utils/localStorge";
 import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "@/config/baseAPIConfig";
 import {
   addUserBelong,
@@ -116,6 +123,8 @@ import {
 } from "@/web-api/center-extend";
 import {ElMessage} from "element-plus";
 import {dict_industry_belong, generalNumericValidator, generalValidatorJudgeIfEmpty} from "@/utils/common";
+import router from "@/router";
+import {removeToken} from "@/utils/auth";
 
 const userId = getLocalStorage(KEY_USER_ID);
 
@@ -270,8 +279,24 @@ let route = useRoute();
 let currentUrl = ref(route.path);
 let nickname = getLocalStorage(KEY_NICKNAME);
 
-// 数据库存的东西是相对路径，这里方便切换环境
-let avatarSrc = baseStaticRecourseAPI[NOW_ENVIRONMENT]+getLocalStorage(KEY_AVATAR)
+// 数据库存的东西是相对路径，这里方便切换环境（登录时已经修改了上下文路径，这里直接用）
+let avatarSrc = getLocalStorage(KEY_AVATAR);
+
+const gotoIndex = ()=>{
+  router.push("/index")
+}
+
+const quitLogin = ()=>{
+  removeToken();
+  setLocalStorage(KEY_NICKNAME, null);
+  setLocalStorage(KEY_AVATAR, null);
+  setLocalStorage(KEY_RESTAURANT_ID, null);
+  setLocalStorage(KEY_ROLE, null);
+  setLocalStorage(KEY_USER_ID, null);
+  setLocalStorage(KEY_USER_NAME, null);
+  router.push("/index")
+  location.reload();
+}
 </script>
 
 <style scoped>

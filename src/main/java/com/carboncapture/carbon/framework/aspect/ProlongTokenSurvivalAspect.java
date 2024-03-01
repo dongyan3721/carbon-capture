@@ -1,7 +1,7 @@
 package com.carboncapture.carbon.framework.aspect;
 
 import com.carboncapture.carbon.core.HttpStatus;
-import com.carboncapture.carbon.framework.config.CustomHttpStatus;
+import com.carboncapture.carbon.core.CustomHttpStatus;
 import com.carboncapture.carbon.framework.exception.ServiceException;
 import com.carboncapture.carbon.framework.exception.UnAuthenticatedException;
 import com.carboncapture.carbon.utils.JwtUtils;

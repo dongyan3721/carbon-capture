@@ -2,6 +2,6 @@ module.exports = {
   lintOnSave: false,
   publicPath: '/',
   devServer: {
-    port: 80
+    port: 8000
   }
 };

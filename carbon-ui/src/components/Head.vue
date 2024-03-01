@@ -21,8 +21,7 @@
         </el-col>
         <el-col :span="4">
           <div class="avatar-login-logout row-item" style="display: flex; align-items: center;">
-            <router-link to="/top-manager" v-if="showTop" class="avatar-to-render-navigator">系统后台</router-link>
-            <router-link to="/restaurant-manager" v-if="showRest" class="avatar-to-render-navigator">食堂后台</router-link>
+            <router-link to="/self-center" v-if="showExtensionFunction" class="avatar-to-render-navigator">个人中心</router-link>
             <router-link to="/login" v-if="showLoginOrRegister" class="avatar-to-render-navigator">登录</router-link>
             <router-link to="/register" v-if="showLoginOrRegister" class="avatar-to-render-navigator">注册</router-link>
 
@@ -34,7 +33,7 @@
         </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>个人中心</el-dropdown-item>
+                  <el-dropdown-item @click.native="gotoSelfCenter">个人中心</el-dropdown-item>
                   <el-dropdown-item @click.native="quitLogin">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -56,7 +55,6 @@ import {
   setLocalStorage
 } from "@/utils/localStorge";
 import {getToken, removeToken} from "@/utils/auth";
-import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../config/baseAPIConfig.js";
 import router from "../router/index.js";
 
 export default {
@@ -67,14 +65,14 @@ export default {
       showRest: false,
       src: null,
       nickname: null,
-      showLoginOrRegister: null
+      showLoginOrRegister: null,
+      showExtensionFunction: false
     }
   },
   created() {
-    this.showTop = getLocalStorage(KEY_ROLE)=="00";
-    this.showRest = (getLocalStorage(KEY_ROLE)=="01")&&(getLocalStorage(KEY_RESTAURANT_ID)!=null)
     this.showLoginOrRegister = getToken()==null;
-    this.src = baseStaticRecourseAPI[NOW_ENVIRONMENT] + getLocalStorage(KEY_AVATAR);
+    this.showExtensionFunction = !this.showLoginOrRegister;
+    this.src = getLocalStorage(KEY_AVATAR);
     this.nickname = getLocalStorage(KEY_NICKNAME)
   },
   methods:{
@@ -87,6 +85,10 @@ export default {
       setLocalStorage(KEY_USER_ID, null);
       setLocalStorage(KEY_USER_NAME, null);
       router.push("/index")
+      location.reload();
+    },
+    gotoSelfCenter(){
+      router.push("/self-center")
     }
   }
 }

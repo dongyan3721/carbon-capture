@@ -39,7 +39,7 @@ public interface CarbonUserMapper {
      * @param user
      * @return
      */
-    @Update("update t_carbon_user set nickname=#{nickname},email=#{email} where user_id=#{userId}")
+    @Update("update t_carbon_user set nickname=#{nickname},email=#{email}, avatar=#{avatar} where user_id=#{userId}")
     void changeUser(CarbonUser user);
 
     /**

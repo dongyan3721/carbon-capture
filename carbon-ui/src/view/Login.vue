@@ -61,6 +61,7 @@ import {ElMessage} from "element-plus";
 import {userLogin} from "@/web-api/login";
 import {KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_ROLE, KEY_USER_ID, setLocalStorage} from "@/utils/localStorge";
 import {setToken} from "@/utils/auth";
+import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "@/config/baseAPIConfig";
 
 let form = reactive({
   email: null,
@@ -142,7 +143,7 @@ const submitForm = ()=>{
 const setProperties = (response)=>{
   let data = response.data
   setLocalStorage(KEY_USER_ID, data.userId)
-  setLocalStorage(KEY_AVATAR, data.avatar);
+  setLocalStorage(KEY_AVATAR, baseStaticRecourseAPI[NOW_ENVIRONMENT]+data.avatar);
   setLocalStorage(KEY_ROLE, data.userType);
   setLocalStorage(KEY_NICKNAME, data.nickname);
   setLocalStorage(KEY_EMAIL, data.email);
