@@ -3,6 +3,7 @@ import { ElNotification, ElMessage} from 'element-plus'
 import { getToken } from './auth.js'
 import errorCode from './errorCode'
 import { tansParams, blobValidate } from "./ruoyi";
+import CustomHttpStatus from "@/utils/CustomHttpStatus";
 // import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../baseAPIConfig.js";
 
 // let downloadLoadingInstance;
@@ -146,10 +147,13 @@ service.interceptors.response.use(res => {
     } else if (code === 601) {
       ElMessage({ message: msg, type: 'warning' })
       return Promise.reject('error')
-    } else if (code !== 200) {
+    }else if (code === CustomHttpStatus.NO_NEED_TO_FLUSH_TOKEN) {
+      return res.data;
+    }else if (code !== 200) {
       ElNotification.error({ title: msg })
       return Promise.reject('error')
-    } else {
+    }
+    else {
       // console.log(idConvert(res.data))
       return res.data;
     }

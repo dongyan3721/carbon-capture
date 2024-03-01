@@ -37,4 +37,7 @@ public interface ProvinceMapper {
 
     @Select("select * from t_province_carbon_output where year=#{year}")
     List<ProvinceCarbonOutput> getAllCarbonOutput(String year);
+
+    @Select("select * from t_provinces")
+    List<Province> queryAllProvinces();
 }

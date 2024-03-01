@@ -16,4 +16,6 @@ public interface ProvinceService {
     List<ProvinceNews> getNewslist(ProvinceNews provinceNews);
 
     List<ProvinceCarbonOutput> getTotalCarbonOutput(String  year);
+
+    List<Province> queryAllProvinces();
 }

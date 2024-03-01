@@ -5,6 +5,11 @@
  */
 
 import {createRouter, createWebHistory} from "vue-router/dist/vue-router";
+import {chatterWithBackendVerifyWhetherTokenIsValid} from "@/utils/routerProperties";
+import {setToken} from "@/utils/auth";
+import CustomHttpStatus from "@/utils/CustomHttpStatus";
+import HttpStatus from "@/utils/HttpStatus";
+import {KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_ROLE, KEY_USER_ID, setLocalStorage} from "@/utils/localStorge";
 
 const routes = [
     {
@@ -73,5 +78,34 @@ const router = createRouter({
     // history: createWebHashHistory(),
     routes
 })
+
+router.beforeEach((to, from , next)=>{
+    if(to.name==='index'||to.name==='register'||to.name==='login'||to.name==='403'||to.name==='404') {
+        next();
+        return
+    }
+    chatterWithBackendVerifyWhetherTokenIsValid().then(res=>{
+        if(res.code===CustomHttpStatus.NO_NEED_TO_FLUSH_TOKEN){
+            next();
+            return;
+        }
+        if(res.code===HttpStatus.SUCCESS){
+            setToken(res.token);
+            return
+        }
+        if(res.code===HttpStatus.UNAUTHORIZED){
+            clearLocalStorage();
+            next("/index")
+        }
+    })
+})
+
+function clearLocalStorage(){
+    setLocalStorage(KEY_USER_ID, null);
+    setLocalStorage(KEY_ROLE, null);
+    setLocalStorage(KEY_NICKNAME, null);
+    setLocalStorage(KEY_AVATAR, null);
+    setLocalStorage(KEY_EMAIL, null);
+}
 
 export default router

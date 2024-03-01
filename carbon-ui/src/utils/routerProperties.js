@@ -8,6 +8,7 @@ import request from "@/utils/request";
 export function chatterWithBackendVerifyWhetherTokenIsValid(){
     return request({
         url: '/token',
-        method: 'get'
+        method: 'get',
+        isToken: true
     })
 }

@@ -37,7 +37,11 @@ public class ProvinceServiceImpl implements ProvinceService {
 
     @Override
     public List<ProvinceCarbonOutput> getTotalCarbonOutput(String year) {
-        List<ProvinceCarbonOutput> provinceCarbonOutputList= provinceMapper.getAllCarbonOutput(year);
-        return provinceCarbonOutputList;
+        return provinceMapper.getAllCarbonOutput(year);
+    }
+
+    @Override
+    public List<Province> queryAllProvinces() {
+        return provinceMapper.queryAllProvinces();
     }
 }

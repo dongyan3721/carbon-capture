@@ -62,7 +62,7 @@
         <el-main>
           <el-form :model="myBelongForm" :inline="false" ref="myBelongFormRef" :rules="myBelongFormRules">
             <el-form-item label="我的行业" prop="industry">
-              <el-cascader :options="dict_industry_belong" placeholder="请选择行业与行业环节" @change="currentlyChangeFormData" clearable/>
+              <el-cascader :options="dict_industry_belong" placeholder="请选择行业与行业环节" v-model="industryAndIndustryProcess" @change="currentlyChangeFormData" clearable/>
             </el-form-item>
             <el-form-item label="我的地理位置" prop="provinceId">
               <el-select v-model="myBelongForm.provinceId" clearable placeholder="请选择省份">
@@ -120,6 +120,8 @@ import {dict_industry_belong, generalNumericValidator, generalValidatorJudgeIfEm
 const userId = getLocalStorage(KEY_USER_ID);
 
 
+let industryAndIndustryProcess = ref([])
+
 const submitMyBelongForm = (fromRef)=>{
   fromRef.validate(valid=>{
     if(valid){
@@ -127,13 +129,13 @@ const submitMyBelongForm = (fromRef)=>{
       if(myBelongForm.belongId){
         modifyUserBelong(myBelongForm).then(res=>{
           ElMessage.success('修改成功！')
-          solutionTableDataLoading.value = true;
-          requestSpecificSolution(userId);
+          // solutionTableDataLoading.value = true;
+          // requestSpecificSolution(userId);
         })
       }else{
         addUserBelong(myBelongForm).then(res=>{
           ElMessage.success('记录添加成功！');
-          solutionTableDataLoading.value = true
+          // solutionTableDataLoading.value = true
           requestUserBelong(false);
         })
       }
@@ -143,8 +145,14 @@ const submitMyBelongForm = (fromRef)=>{
 
 // 级联选择框内值发生改变时，修改表单数据
 let currentlyChangeFormData = (value)=>{
-  myBelongForm.industry = value[0]
-  myBelongForm.industryProcess = value[1]
+  try{
+    myBelongForm.industry = value[0]
+    myBelongForm.industryProcess = value[1]
+  }catch (e){
+    myBelongForm.industry = null
+    myBelongForm.industryProcess = null
+  }
+  console.log(value)
 }
 
 // 我的行业以及行业环节、地理位置
@@ -206,7 +214,7 @@ const downloadEssay = (row)=>{
 
 // 页面加载时要干的事
 function checkWhetherUserHadChosenHisBelong(){
-  solutionTableDataLoading.value = true
+  // solutionTableDataLoading.value = true
   requestAllProvinces().then(res=>{
     res.rows.map(province=>{
       provinces.value.push({
@@ -239,8 +247,11 @@ function requestUserBelong(requireRemind){
       myBelongForm.industry = res.data.industry
       myBelongForm.industryProcess = res.data.industryProcess
       myBelongForm.blurCarbonOutput = res.data.blurCarbonOutput
+      industryAndIndustryProcess.value = []
+      industryAndIndustryProcess.value.push(res.data.industry)
+      industryAndIndustryProcess.value.push(res.data.industryProcess)
       // 填了行业信息，那么继续去请求对应的解决方案
-      requestSpecificSolution(userId);
+      // requestSpecificSolution(userId);
     }else{
       if(requireRemind){
         ElMessage.warning('请先在本页面完成行业信息录入再使用本功能！')
@@ -252,7 +263,7 @@ function requestUserBelong(requireRemind){
 
 
 onBeforeMount( ()=>{
-  // checkWhetherUserHadChosenHisBelong();
+  checkWhetherUserHadChosenHisBelong();
 })
 
 let route = useRoute();
