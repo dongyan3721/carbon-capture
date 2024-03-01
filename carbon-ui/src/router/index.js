@@ -14,7 +14,7 @@ import {KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_ROLE, KEY_USER_ID, setLocalStor
 const routes = [
     {
         path: '/',
-        redirect: '/province'
+        redirect: '/index'
     },
     {
         name: 'index',
@@ -23,7 +23,7 @@ const routes = [
     },
     {
         name: 'province',
-        path: '/province',
+        path: '/province/:provinceId',
         component: () => import('../view/ProvinceMethod.vue')
     },
     {
@@ -91,7 +91,7 @@ router.beforeEach((to, from , next)=>{
         }
         if(res.code===HttpStatus.SUCCESS){
             setToken(res.token);
-            return
+            next();
         }
     }).catch(err=>{
         clearLocalStorage();

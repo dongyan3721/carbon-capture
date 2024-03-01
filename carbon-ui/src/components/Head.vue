@@ -21,9 +21,9 @@
         </el-col>
         <el-col :span="4">
           <div class="avatar-login-logout row-item" style="display: flex; align-items: center;">
-            <router-link to="/self-center" v-if="showExtensionFunction" class="avatar-to-render-navigator">个人中心</router-link>
-            <router-link to="/login" v-if="showLoginOrRegister" class="avatar-to-render-navigator">登录</router-link>
-            <router-link to="/register" v-if="showLoginOrRegister" class="avatar-to-render-navigator">注册</router-link>
+            <a :href="`${context}/self-center`" v-if="showExtensionFunction" class="avatar-to-render-navigator">个人中心</a>
+            <a :href="`${context}/login`" v-if="showLoginOrRegister" class="avatar-to-render-navigator">登录</a>
+            <a :href="`${context}/register`" v-if="showLoginOrRegister" class="avatar-to-render-navigator">注册</a>
 
             <el-dropdown v-if="!showLoginOrRegister">
         <span class="el-dropdown-link"
@@ -69,6 +69,9 @@ export default {
       showExtensionFunction: false
     }
   },
+  props:{
+    context: String
+  },
   created() {
     this.showLoginOrRegister = getToken()==null;
     this.showExtensionFunction = !this.showLoginOrRegister;
@@ -89,6 +92,7 @@ export default {
     },
     gotoSelfCenter(){
       router.push("/self-center")
+      window.open(`${this.context}/self-center`, 'newTab')
     }
   }
 }

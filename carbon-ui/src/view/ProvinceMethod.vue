@@ -4,7 +4,7 @@
  * @date 2024/1/24-00:09:36
  * -->
 <template>
-  <Header/>
+  <Header :context="context"/>
   <div class="page-content-wrapper">
     <div class="province-map">
       <img src="https://img1.baidu.com/it/u=1012539018,2422192115&fm=253&fmt=auto&app=138&f=GIF?w=659&h=500" alt="dadas"/>
@@ -97,6 +97,8 @@ import {
   queryProvinceNews,
   queryProvincePolicy
 } from "@/web-api/province-method";
+import router from "@/router";
+import {onBeforeRouteUpdate, useRoute} from "vue-router/dist/vue-router";
 
 const count = ref(0)
 const load = () => {
@@ -107,14 +109,19 @@ const t = ref("中中中电视剧送到活动卫东未发货女生打架dwkb纳�
 const herf = ref('https://www.bilibili.com/')
 
 
-let provinceId = ref("e8c1e715-b855-11ee-8975-0242ac110002")
+// 记录页面上下文路径
+const fullUrl = window.location.href;
+const path = useRoute();
+const context = fullUrl.replace(path.fullPath, "");
+
+let provinceId = ref(path.params.provinceId)
 let provinceCases = ref()
 let provinceIntents = ref()
 let provincePolicy = ref()
 // 无限滚动条下滚时候记录请求的页数
 let scrollPageNumber = ref(1)
 const handleScrollToBottom = function (){
-  queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 10, provinceId: provinceId.value}).then(res=>{
+  queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 2, provinceId: provinceId.value}).then(res=>{
     if(provinceNews.value.length<res.total){
       provinceNews.value = provinceNews.value.concat(res.rows);
       ++scrollPageNumber.value
@@ -154,7 +161,7 @@ const scrollListener = function (ev){
   let bottomDistance = document.body.scrollHeight - document.documentElement.clientHeight - scrollTop;
   if(bottomDistance<300){
     // 请求新数据，判断新闻有没有完
-    // handleScrollToBottom();
+    handleScrollToBottom();
   }
 }
 

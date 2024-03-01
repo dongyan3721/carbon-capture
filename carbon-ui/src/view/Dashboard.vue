@@ -4,7 +4,7 @@
  * @date 2024/1/28-15:02:12
  * -->
 <template>
-  <Header></Header>
+  <Header :context="context"></Header>
   <div class="page-container">
     <div id="controller-change-output">
       <div class="change-output-title">
@@ -21,6 +21,7 @@
     </div>
     <div id="app-32-map" class="is-full"></div>
   </div>
+  <router-view/>
 </template>
 
 <script setup>
@@ -39,6 +40,8 @@ import useSequenceFrameAnimate from '@/hooks/useSequenceFrameAnimate';
 import useCSS2DRender from '@/hooks/useCSS2DRender';
 import Header from "@/components/Head";
 import {requestCarbonOutput} from "@/web-api/request-carbon-output";
+import router from "@/router";
+import {onBeforeRouteLeave, useRoute} from "vue-router/dist/vue-router";
 
 let nowYear = ref('2020')
 let centerXY = [106.59893798828125, 26.918846130371094];
@@ -458,13 +461,60 @@ onMounted(async () => {
     baseEarth.run();
     document.querySelector(".allow-touch-styles").remove()
   })
-
+  window.addEventListener('mousedown', clickReadyToJump, false);
+  window.addEventListener('mousemove', mouseMoveInteractListener, false);
   window.addEventListener('resize', resize);
 });
+
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
-  baseEarth.empty();
+  window.removeEventListener('mousedown', clickReadyToJump);
+  window.removeEventListener('mousemove', mouseMoveInteractListener);
+  baseEarth = null;
 });
+
+// 两个元件用来判断与点击点相交的元素
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+
+// 鼠标点击监听器
+const clickReadyToJump = function(event) {
+  // 计算鼠标点击位置
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, baseEarth.camera);
+  let intersects = raycaster.intersectObjects(baseEarth.scene.children);
+
+  if (intersects.length > 0) {
+    let intersectedObject = intersects[0].object;
+    if(intersectedObject.parent.name){
+      document.documentElement.style.cursor = "default";
+      window.open(`${context}/province/${carbonOutputReflection[intersectedObject.parent.name].provinceId}`, 'newTab')
+    }
+  }
+}
+
+// 记录页面上下文路径
+const fullUrl = window.location.href;
+const path = useRoute();
+const context = fullUrl.replace(path.fullPath, "");
+
+// 鼠标移动监听器
+const mouseMoveInteractListener = function(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, baseEarth.camera);
+  let intersects = raycaster.intersectObjects(baseEarth.scene.children);
+  if (intersects.length > 0) {
+    let intersectedObject = intersects[0].object;
+    if(intersectedObject.parent.name){
+      document.documentElement.style.cursor = "pointer";
+    }else{
+      document.documentElement.style.cursor = "default";
+    }
+  }
+}
 
 let carbonOutput = ref([])
 let carbonOutputReflection = reactive({})
