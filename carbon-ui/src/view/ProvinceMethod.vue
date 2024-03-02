@@ -76,7 +76,7 @@
     <el-row>
       <el-col :span="3"/>
       <el-col :span="12">
-        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>
+<!--        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>-->
 <!--        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>-->
 <!--        <InfiniteScrollNews title="大海的一个个第一上车VB发给哦五我到家" content-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image" image-url="https://sf3-cdn-tos.toutiaostatic.com/img/user-avatar/19f2ae22d440a0bda4e6da4dd4c15d4e~300x300.image"/>-->
         <InfiniteScrollNews v-for="news in provinceNews" :title="news.title" :content-url="news.contentUrl" :image-url="news.imageUrl" :key="news.newsId"/>
@@ -120,11 +120,15 @@ let provinceIntents = ref()
 let provincePolicy = ref()
 // 无限滚动条下滚时候记录请求的页数
 let scrollPageNumber = ref(1)
+// 记录上一次请求是否已经请求满了数据
+let continueToRequestNews = ref(true);
 const handleScrollToBottom = function (){
   queryProvinceNews({pageNum: scrollPageNumber.value, pageSize: 2, provinceId: provinceId.value}).then(res=>{
     if(provinceNews.value.length<res.total){
       provinceNews.value = provinceNews.value.concat(res.rows);
       ++scrollPageNumber.value
+    }else {
+      continueToRequestNews.value = false
     }
   })
 }
@@ -159,7 +163,7 @@ const scrollListener = function (ev){
   let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
   // console.log('scrollTop=',scrollTop)
   let bottomDistance = document.body.scrollHeight - document.documentElement.clientHeight - scrollTop;
-  if(bottomDistance<300){
+  if(bottomDistance<300&&continueToRequestNews.value){
     // 请求新数据，判断新闻有没有完
     handleScrollToBottom();
   }
