@@ -137,9 +137,9 @@ const submitForm = ()=>{
       console.log(valid)
       userRegister(form).then(response=>{
         if(response.code===200){
-          ElMessage.success('注册成功，3秒后跳转至登录页面')
+          ElMessage.success('注册成功，跳转至登录页面')
           sleep(3000)
-          router.push('/index')
+          router.push('/login')
         }else{
           ElMessage.error('用户名或密码错误！')
           resetForm()
