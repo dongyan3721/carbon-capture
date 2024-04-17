@@ -95,6 +95,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-button type="warning"><el-icon><Upload/></el-icon>导入</el-button>
         </el-main>
       </el-container>
     </el-container>
@@ -103,7 +104,7 @@
 
 <script setup>
 import {useRoute} from "vue-router/dist/vue-router";
-import {ArrowRight, User, Edit, Finished} from "@element-plus/icons-vue";
+import {ArrowRight, User, Edit, Finished, Upload} from "@element-plus/icons-vue";
 import {onBeforeMount, reactive, ref} from "vue";
 import {
   getLocalStorage,
@@ -212,7 +213,18 @@ let provinceReflect = reactive({})
 
 
 // 存储推荐的解决方案
-let solutionTableData = ref([])
+let solutionTableData = ref([
+  {
+    method: 'MEA吸收剂',
+    gasOutput: '100000m^3/h',
+    captureEnergyExpenditure: '/'
+  },
+  {
+    method: '富氧燃烧',
+    gasOutput: '/',
+    captureEnergyExpenditure: '2623.91kJ/kg CO2'
+  }
+])
 // python跑模型可能比较慢，遮罩一下解决方案的表格
 let solutionTableDataLoading = ref(false);
 // 下载参考方法

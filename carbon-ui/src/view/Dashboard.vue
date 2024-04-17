@@ -461,14 +461,14 @@ onMounted(async () => {
     baseEarth.run();
     document.querySelector(".allow-touch-styles").remove()
   })
-  window.addEventListener('mousedown', clickReadyToJump, false);
+  window.addEventListener('mouseup', clickReadyToJump, false);
   window.addEventListener('mousemove', mouseMoveInteractListener, false);
   window.addEventListener('resize', resize);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
-  window.removeEventListener('mousedown', clickReadyToJump);
+  window.removeEventListener('mouseup', clickReadyToJump);
   window.removeEventListener('mousemove', mouseMoveInteractListener);
   baseEarth = null;
 });

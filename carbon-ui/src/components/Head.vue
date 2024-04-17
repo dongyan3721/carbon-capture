@@ -9,7 +9,7 @@
           <div class="row-item restaurant-img-text-holder" style="display: flex; align-items: center; justify-content: center">
             <router-link to="/index" style="display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--el-index-normal)">
               <img src="@/assets/restaurant.svg" alt="碳补集"/>
-              <p>上海理工大学一站式碳捕集服务平台</p>
+              <p>一站式碳捕集服务平台</p>
             </router-link>
           </div>
         </el-col>

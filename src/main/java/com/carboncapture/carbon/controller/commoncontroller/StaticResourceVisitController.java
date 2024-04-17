@@ -36,7 +36,7 @@ public class StaticResourceVisitController {
      */
     private void privateService(HttpServletResponse response, HttpServletRequest request) throws Exception {
         String decode = URLDecoder.decode(request.getRequestURL().toString(), StandardCharsets.UTF_8);
-        String resourceName = decode.replace("http://localhost:8080/static/", "");
+        String resourceName = decode.replaceAll("http:.+?static/", "");
         if(!FileUtils.checkAllowDownload(resourceName)){
             throw new Exception(String.format("请求的文件%s不存在！", resourceName));
         }
