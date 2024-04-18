@@ -4,6 +4,7 @@ import { getToken } from './auth.js'
 import errorCode from './errorCode'
 import { tansParams, blobValidate } from "./ruoyi";
 import CustomHttpStatus from "@/utils/CustomHttpStatus";
+import { saveAs } from 'file-saver'
 // import {baseStaticRecourseAPI, NOW_ENVIRONMENT} from "../baseAPIConfig.js";
 
 // let downloadLoadingInstance;
@@ -173,9 +174,10 @@ service.interceptors.response.use(res => {
   }
 )
 
+let downloadLoadingInstance;
+
 // 通用下载方法
-/**export function download(url, params, filename, config) {
-  downloadLoadingInstance = Loading.service({ text: "正在下载数据，请稍候", spinner: "el-icon-loading", background: "rgba(0, 0, 0, 0.7)", })
+export function download(url, params, filename, config) {
   return service.post(url, params, {
     transformRequest: [(params) => { return tansParams(params) }],
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -192,12 +194,10 @@ service.interceptors.response.use(res => {
       const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
       ElMessage.error(errMsg);
     }
-    downloadLoadingInstance.close();
   }).catch((r) => {
     console.error(r)
     ElMessage.error('下载文件出现错误，请联系管理员！')
-    downloadLoadingInstance.close();
   })
-}*/
+}
 
 export default service

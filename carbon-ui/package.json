@@ -14,6 +14,7 @@
     "core-js": "^3.6.5",
     "delaunator": "^5.0.0",
     "element-plus": "^2.5.3",
+    "file-saver": "^2.0.5",
     "geo-point-in-polygon": "^1.0.0",
     "js-cookie": "^3.0.5",
     "lodash.max": "^4.0.1",

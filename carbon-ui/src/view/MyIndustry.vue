@@ -95,7 +95,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button type="warning"><el-icon><Upload/></el-icon>导入</el-button>
         </el-main>
       </el-container>
     </el-container>
@@ -126,6 +125,7 @@ import {ElMessage} from "element-plus";
 import {dict_industry_belong, generalNumericValidator, generalValidatorJudgeIfEmpty} from "@/utils/common";
 import router from "@/router";
 import {removeToken} from "@/utils/auth";
+import {download} from "@/utils/request";
 
 const userId = getLocalStorage(KEY_USER_ID);
 
@@ -217,19 +217,22 @@ let solutionTableData = ref([
   {
     method: 'MEA吸收剂',
     gasOutput: '100000m^3/h',
-    captureEnergyExpenditure: '/'
+    captureEnergyExpenditure: '/',
+    link: '/static/document/钢铁1.docx'
   },
   {
     method: '富氧燃烧',
     gasOutput: '/',
-    captureEnergyExpenditure: '2623.91kJ/kg CO2'
+    captureEnergyExpenditure: '2623.91kJ/kg CO2',
+    link: '/static/document/钢铁2.docx'
   }
 ])
 // python跑模型可能比较慢，遮罩一下解决方案的表格
 let solutionTableDataLoading = ref(false);
 // 下载参考方法
 const downloadEssay = (row)=>{
-
+  console.log(row.link)
+  download(row.link, {}, row.link.split('/').slice(-1))
 }
 
 
