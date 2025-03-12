@@ -26,7 +26,7 @@
               <el-icon>
                 <Edit/>
               </el-icon>
-              我的行业
+              我的数据
             </template>
           </el-menu-item>
           <el-menu-item index="/self-center/my-solution">

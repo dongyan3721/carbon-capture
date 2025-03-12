@@ -131,3 +131,13 @@ create table t_solution
     remark                     varchar(1024)                      null
 )
     comment '已有的捕集方法表';
+
+create table t_industry_yearly_carbon(
+                                         inventory varchar(255) not null ,
+                                         carbon_source varchar(255) not null ,
+                                         year int not null ,
+                                         output double not null ,
+                                         primary key (inventory, carbon_source, year)
+
+
+)

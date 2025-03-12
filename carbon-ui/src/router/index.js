@@ -14,17 +14,37 @@ import {KEY_AVATAR, KEY_EMAIL, KEY_NICKNAME, KEY_ROLE, KEY_USER_ID, setLocalStor
 const routes = [
     {
         path: '/',
-        redirect: '/index'
+        redirect: '/cmdv'
     },
     {
-        name: 'index',
+        path: '/cmdv',
+        name: 'cmdv',
+        component: ()=>import('@/view/v2/ChinaMapDataVisualization.vue')
+    },
+    {
+        path: '/cpdv',
+        name: 'cpdv',
+        component: ()=>import('@/view/v2/CarbonPriceDataVisualization.vue')
+    },
+    {
+        path: '/report',
+        component: ()=>import('@/view/v2/IntelligentReport.vue'),
+        name: 'report'
+    },
+    {
+      path: '/standard-example',
+        component: ()=>import('@/view/v2/StandardExample.vue'),
+        name: 'example'
+    },
+    {
+
         path: '/index',
-        component: () => import('../view/Dashboard.vue')
+        redirect: '/cmdv'
     },
     {
         name: 'province',
         path: '/province/:provinceId',
-        component: () => import('../view/ProvinceMethod.vue')
+        component: () => import('@/view/ProvinceMethod.vue')
     },
     {
         path: '/self-center',
@@ -46,30 +66,30 @@ const routes = [
             {
                 name: 'center-industry',
                 path: 'my-industry',
-                component: () => import('@/view/MyIndustry.vue'),
-                meta: {title: '我的行业'}
+                component: () => import('@/view/v2/MyIndustry.vue'),
+                meta: {title: '我的数据'}
             }
         ]
     },
     {
         name: 'login',
         path: '/login',
-        component: () => import('../view/Login')
+        component: () => import('@/view/Login.vue')
     },
     {
         name: 'register',
         path: '/register',
-        component: () => import('../view/Register')
+        component: () => import('@/view/Register.vue')
     },
     {
         name: '404',
         path: '/404',
-        component: () => import('../view/common/HttpStatus404')
+        component: () => import('@/view/common/HttpStatus404.vue')
     },
     {
         name: '403',
         path: '/403',
-        component: () => import('../view/common/HttpStatus403')
+        component: () => import('@/view/common/HttpStatus403.vue')
     }
 ]
 
@@ -80,7 +100,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from , next)=>{
-    if(to.name==='index'||to.name==='register'||to.name==='login'||to.name==='403'||to.name==='404'||to.name==='province') {
+    if(to.name==='index'||to.name==='register'||to.name==='login'||to.name==='403'||to.name==='404'||to.name==='province'
+    ||to.name==='cmdv'||to.name==='cpdv'||to.name==='example') {
         next();
         return
     }

@@ -83,7 +83,7 @@ const idConvert = (input)=>{
 // 创建axios实例
 const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
-  baseURL: "http://47.120.49.22:8080",
+  baseURL: "http://localhost:8080",
   // 超时
   timeout: 10000,
   // 取消axios自动解析json，用自己定义的雪花算法id拦截器拦截

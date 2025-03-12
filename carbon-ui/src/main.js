@@ -7,7 +7,8 @@ import 'vue-cropper/dist/index.css'
 import router from './router/index'
 import axios from 'axios'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-
+import '../tail.main.scss'
+import NaiveUI from 'naive-ui'
 
 const app = createApp(App)
 // 全局挂载element-plus图标组件
@@ -21,4 +22,5 @@ app.config.globalProperties.$axios = axios
 app.use(ElementPlus)
 // 集成vue-router
 app.use(router)
+app.use(NaiveUI)
 app.mount('#app')
